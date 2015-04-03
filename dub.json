@@ -1,0 +1,48 @@
+{
+	"name": "D2DGame",
+	"description": "D 2D Game-Engine",
+	"copyright": "Copyright © 2015, WebFreak001",
+	"authors": ["WebFreak001"],
+	"license": "GPL-2.0",
+	"buildTypes":
+	{
+		"debug":
+		{
+			"buildOptions": ["debugMode", "debugInfo", "debugInfoC", "alwaysStackFrame", "stackStomping"]
+		},
+		"debug-profile":
+		{
+			"buildOptions": ["debugMode", "debugInfo", "debugInfoC", "profile", "alwaysStackFrame", "stackStomping"]
+		},
+		"release":
+		{
+			"buildOptions": ["releaseMode", "inline", "optimize"]
+		},
+		"docs":
+		{
+			"buildOptions": ["syntaxOnly"],
+			"dflags": ["-c", "-Dddocs"]
+		}
+	},
+	"configurations": [
+	{
+		"name": "Demo",
+		"targetType": "executable",
+		"targetPath": "bin",
+		"sourcePaths": ["test/", "source/"],
+		"importPaths": ["test/", "source/"]
+	},
+	{
+		"name": "lib",
+		"targetType": "library",
+		"targetPath": "lib",
+		"sourcePaths": ["source/"],
+		"importPaths": ["source/"]
+	}],
+	"dependencies":
+	{
+		"derelict-sdl2": "~>1.9.4",
+		"derelict-gl3": "~>1.0.12",
+		"gl3n": "~>1.0.1"
+	}
+}
