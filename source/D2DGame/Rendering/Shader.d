@@ -2,13 +2,25 @@ module D2DGame.Rendering.Shader;
 
 import D2D;
 
+///
 enum ShaderType : ubyte
 {
-	Vertex, TessControl, TessEvaluation, Geometry, Fragment
+	/// Vertex Shader
+	Vertex,
+	/// Tessellation Control Shader
+	TessControl,
+	/// Tessellation Evaluation Shader
+	TessEvaluation,
+	/// Geometry Shader
+	Geometry,
+	/// Fragment/Pixel Shader
+	Fragment
 }
 
-class Shader
+/// Class containing a single shader for combining in a ShaderProgram.
+class Shader : IVerifiable
 {
+	/// Loads the shader content into memory.
 	public bool load(ShaderType type, string content)
 	{
 		this.content = content;
@@ -39,6 +51,8 @@ class Shader
 		return true;
 	}
 
+	/// Compiles the shader and throws an Exception if an error occured.
+	/// Will automatically be called when attaching the shader to a ShaderProgram instance.
 	public bool compile()
 	{
 		if (compiled)
@@ -61,9 +75,16 @@ class Shader
 		return true;
 	}
 
+	///
 	public @property uint id()
 	{
 		return _id;
+	}
+
+	///
+	public @property bool valid()
+	{
+		return _id > 0;
 	}
 
 	private uint   _id = 0;

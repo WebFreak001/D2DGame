@@ -4,13 +4,16 @@ import D2D;
 
 static import std.file;
 
-class ShaderProgram
+/// Class for combining shaders to a bindable ShaderProgram.
+class ShaderProgram : IVerifiable
 {
-	public uint create()
+	///
+	public this()
 	{
-		return program = glCreateProgram();
+		program = glCreateProgram();
 	}
 
+	/// Will directly load the content from vertex and fragment and will create and return a ShaderProgram.
 	public static ShaderProgram fromVertexFragmentFiles(string vertex, string fragment)
 	{
 		Shader v = new Shader();
@@ -20,30 +23,34 @@ class ShaderProgram
 		f.load(ShaderType.Fragment, std.file.readText(fragment));
 
 		ShaderProgram program = new ShaderProgram;
-		program.create();
 		program.attach(v);
 		program.attach(f);
 		program.link();
 		return program;
 	}
 
+	/// Attaches a new shader to the program.
+	/// Will call `shader.compile()` if necessary.
 	public void attach(Shader shader)
 	{
 		shader.compile();
 		glAttachShader(program, shader.id);
 	}
 
+	/// Creates the program and binds it.
 	public void link()
 	{
 		glLinkProgram(program);
 		bind();
 	}
 
+	/// Binds `this` for usage.
 	public void bind()
 	{
 		glUseProgram(program);
 	}
 
+	/// Regsiters a uniform variable in the shader for later setting.
 	public int registerUniform(string uniform)
 	{
 		if ((uniform in _properties) !is null)
@@ -52,60 +59,75 @@ class ShaderProgram
 		return _properties[uniform];
 	}
 
+	///
 	public void set(string uniform, int value)
 	{
 		glUniform1i(_properties[uniform], value);
 	}
 
+	///
 	public void set(string uniform, float value)
 	{
 		glUniform1f(_properties[uniform], value);
 	}
 
+	///
 	public void set(string uniform, vec2 value)
 	{
 		glUniform2fv(_properties[uniform], 1, value.value_ptr);
 	}
 
+	///
 	public void set(string uniform, vec3 value)
 	{
 		glUniform3fv(_properties[uniform], 1, value.value_ptr);
 	}
 
+	///
 	public void set(string uniform, vec4 value)
 	{
 		glUniform4fv(_properties[uniform], 1, value.value_ptr);
 	}
 
+	///
 	public void set(string uniform, mat2 value)
 	{
 		glUniformMatrix2fv(_properties[uniform], 1, 1, value.value_ptr);
 	}
 
+	///
 	public void set(string uniform, mat3 value)
 	{
 		glUniformMatrix3fv(_properties[uniform], 1, 1, value.value_ptr);
 	}
 
+	///
 	public void set(string uniform, mat4 value)
 	{
 		glUniformMatrix4fv(_properties[uniform], 1, 1, value.value_ptr);
 	}
 
+	///
 	public uint id()
 	{
 		return program;
 	}
 
+	///
+	public @property bool valid()
+	{
+		return program > 0;
+	}
+
 	private uint program;
 	private int[string] _properties;
 
+	/// Regular texture shader.
 	public static ShaderProgram defaultShader;
 
 	static void load()
 	{
 		defaultShader = new ShaderProgram();
-		defaultShader.create();
 		Shader vertex = new Shader();
 		vertex.load(ShaderType.Vertex, "#version 330
 layout(location = 0) in vec3 in_position;

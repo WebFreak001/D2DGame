@@ -2,6 +2,7 @@ module D2DGame.Window.Window;
 
 import D2D;
 
+/// Single-Window class wrapping SDL_Window
 class Window : IVerifiable, IDisposable, IRenderTarget
 {
 private:
@@ -14,15 +15,19 @@ private:
 	mat4		   _postMatrix;
 
 public:
+	///
 	static SDL_GLContext glContext = null;
 
+	///
 	this(string title = "D2DGame", uint flags = WindowFlags.Default) { this(800, 480, title, flags); }
 
+	///
 	this(int width, int height, string title = "D2DGame", uint flags = WindowFlags.Default)
 	{
 		this(SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, title, flags);
 	}
 
+	///
 	this(int x, int y, int width, int height, string title, uint flags = WindowFlags.Default)
 	{
 		DerelictSDL2.load();
@@ -41,6 +46,9 @@ public:
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
 
 		glContext = SDL_GL_CreateContext(_handle);
+
+		SDL_GL_SetSwapInterval(0);
+
 		DerelictGL3.reload();
 
 		if (SDL_GL_MakeCurrent(_handle, glContext) < 0)
@@ -50,6 +58,7 @@ public:
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 		ShaderProgram.load();
+		Texture.load();
 
 		create(width, height);
 
@@ -66,6 +75,7 @@ public:
 			dispose();
 	}
 
+	/// Polls a event from the stack and returns `true` if one was found.
 	bool pollEvent(ref WindowEvent event)
 	{
 		SDL_Event evt;
@@ -78,6 +88,7 @@ public:
 		return false;
 	}
 
+	/// Pushes `WindowEvent.Quit` to the event stack.
 	void quit()
 	{
 		SDL_Event sdlevent;
@@ -123,11 +134,13 @@ public:
 			throw new Exception("Invalid Framebuffer");
 	}
 
+	/// Texture containing rendered content.
 	@property Texture texture()
 	{
 		return _texture;
 	}
 
+	/// Displays rendered content to the window.
 	void display(ShaderProgram post = null)
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -137,29 +150,36 @@ public:
 		_direct = true;
 		projectionStack.push();
 		projectionStack.set(_postMatrix);
+		matrixStack.push();
+		matrixStack.set(mat4.identity);
 		draw(_displayPlane, post);
+		matrixStack.pop();
 		projectionStack.pop();
 		_direct = false;
 		SDL_GL_SwapWindow(_handle);
 	}
 
+	///
 	@property void title(string title)
 	{
 		SDL_SetWindowTitle(_handle, title.toStringz());
 	}
 
+	///
 	@property string title()
 	{
 		string title = SDL_GetWindowTitle(_handle).fromStringz().dup;
 		return title;
 	}
 
+	///
 	@property void width(int width)
 	{
 		SDL_SetWindowSize(_handle, width, height);
 		resize(width, height);
 	}
 
+	///
 	@property int width()
 	{
 		int x, y;
@@ -167,12 +187,14 @@ public:
 		return x;
 	}
 
+	///
 	@property void height(int height)
 	{
 		SDL_SetWindowSize(_handle, width, height);
 		resize(width, height);
 	}
 
+	///
 	@property int height()
 	{
 		int x, y;
@@ -180,11 +202,13 @@ public:
 		return y;
 	}
 
+	///
 	@property void maxWidth(int maxWidth)
 	{
 		SDL_SetWindowMaximumSize(_handle, maxWidth, maxHeight);
 	}
 
+	///
 	@property int maxWidth()
 	{
 		int x, y;
@@ -192,11 +216,13 @@ public:
 		return x;
 	}
 
+	///
 	@property void maxHeight(int maxHeight)
 	{
 		SDL_SetWindowMaximumSize(_handle, maxWidth, maxHeight);
 	}
 
+	///
 	@property int maxHeight()
 	{
 		int x, y;
@@ -204,11 +230,13 @@ public:
 		return y;
 	}
 
+	///
 	@property void minWidth(int minWidth)
 	{
 		SDL_SetWindowMinimumSize(_handle, minWidth, minHeight);
 	}
 
+	///
 	@property int minWidth()
 	{
 		int x, y;
@@ -216,11 +244,13 @@ public:
 		return x;
 	}
 
+	///
 	@property void minHeight(int minHeight)
 	{
 		SDL_SetWindowMinimumSize(_handle, minWidth, minHeight);
 	}
 
+	///
 	@property int minHeight()
 	{
 		int x, y;
@@ -228,11 +258,13 @@ public:
 		return y;
 	}
 
+	///
 	@property void x(int x)
 	{
 		SDL_SetWindowPosition(_handle, x, y);
 	}
 
+	///
 	@property int x()
 	{
 		int x, y;
@@ -240,11 +272,13 @@ public:
 		return x;
 	}
 
+	///
 	@property void y(int y)
 	{
 		SDL_SetWindowPosition(_handle, x, y);
 	}
 
+	///
 	@property int y()
 	{
 		int x, y;
@@ -252,59 +286,89 @@ public:
 		return y;
 	}
 
+	/// Shows the window if hidden.
 	void show()
 	{
 		SDL_ShowWindow(_handle);
 	}
 
+	/// Hides the window.
 	void hide()
 	{
 		SDL_HideWindow(_handle);
 	}
 
+	///
 	void minimized()
 	{
 		SDL_MinimizeWindow(_handle);
 	}
 
+	///
 	void maximize()
 	{
 		SDL_MaximizeWindow(_handle);
 	}
 
+	/// Restores the window state from minimized or maximized.
 	void restore()
 	{
 		SDL_RestoreWindow(_handle);
 	}
 
+	///
 	void focus()
 	{
 		SDL_RaiseWindow(_handle);
 	}
 
+	/// Sets the icon to a Btimap.
 	void setIcon(Bitmap icon)
 	{
 		SDL_SetWindowIcon(_handle, icon.surface);
 	}
 
+	/// Closes the window and invalidates it.
 	void dispose()
 	{
 		SDL_DestroyWindow(_handle);
 		_handle = null;
 	}
 
+	/// See_Also: dispose
 	void close()
 	{
 		dispose();
 	}
 
-	bool isOpen()
+	/// Returns if the window exists
+	/// See_Also: valid
+	@property bool open()
 	{
 		return valid;
 	}
 
+	/// Checks if the window is still open.
 	@property bool valid()
 	{
 		return _handle !is null;
 	}
+}
+
+///
+unittest
+{
+	Window window = new Window(800, 600, "Unittest");
+
+	assert(window.valid);
+
+	assert(window.title == "Unittest");
+	window.title = "Window Title";
+	assert(window.title == "Window Title");
+	// Automatic conversion from c-strings to D-strings
+
+	assert(window.width == 800);
+
+	window.close();
+	assert(!window.valid);
 }

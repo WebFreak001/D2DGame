@@ -21,6 +21,7 @@ public
 	import D2DGame.Core.IDisposable;
 	import D2DGame.Core.Transformable;
 	import D2DGame.Core.Color3;
+	import D2DGame.Core.FPSLimiter;
 
 	import D2DGame.Window.Window;
 	import D2DGame.Window.WindowEvent;
@@ -41,27 +42,33 @@ public
 	import std.typecons;
 }
 
+/// 2D rotation on a mat4.
 pure mat4 rotate2d(mat4 mat, float alpha)
 {
 	mat = mat.rotatez(alpha);
 	return mat;
 }
 
+/// 2D scale on a mat4.
 pure mat4 scale2d(mat4 mat, float x, float y)
 {
 	mat = mat.scale(x, y, 1);
 	return mat;
 }
 
+/// 2D translation on a mat4.
 pure mat4 translate2d(mat4 mat, float x, float y)
 {
 	mat = mat.translate(x, y, 0);
 	return mat;
 }
 
+/// Matrix stack for modelview (like glPopMatrix, glPushMatrix).
 MatrixStack!mat4 matrixStack;
+/// Matrix stack for projection.
 MatrixStack!mat4 projectionStack;
 
+/// Initializes matrix stacks
 static this()
 {
 	matrixStack.set(mat4.identity);

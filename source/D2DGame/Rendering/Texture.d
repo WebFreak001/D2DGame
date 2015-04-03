@@ -2,53 +2,65 @@ module D2DGame.Rendering.Texture;
 
 import D2D;
 
+///
 enum TextureFilterMode : int
 {
-	Linear				 = GL_LINEAR,
-	Nearest				 = GL_NEAREST,
-	NearestMipmapNearest = GL_NEAREST_MIPMAP_NEAREST,
-	LinearMipmapNearest	 = GL_LINEAR_MIPMAP_NEAREST,
-	NearestMipmapLinear	 = GL_NEAREST_MIPMAP_LINEAR,
-	LinearMipmapLinear	 = GL_LINEAR_MIPMAP_LINEAR,
+	Linear				 = GL_LINEAR,                 /// `GL_LINEAR` sampling. Smooth looking textures.
+	Nearest				 = GL_NEAREST,                /// `GL_NEAREST` sampling. No smoothing.
+	NearestMipmapNearest = GL_NEAREST_MIPMAP_NEAREST, /// `GL_NEAREST_MIPMAP_NEAREST` sampling. Not usable in mag filter.
+	LinearMipmapNearest	 = GL_LINEAR_MIPMAP_NEAREST,  /// `GL_LINEAR_MIPMAP_NEAREST` sampling. Not usable in mag filter.
+	NearestMipmapLinear	 = GL_NEAREST_MIPMAP_LINEAR,  /// `GL_NEAREST_MIPMAP_LINEAR` sampling. Not usable in mag filter.
+	LinearMipmapLinear	 = GL_LINEAR_MIPMAP_LINEAR,   /// `GL_LINEAR_MIPMAP_LINEAR` sampling. Not usable in mag filter.
 }
 
+///
 enum TextureClampMode : int
 {
-	ClampToBorder = GL_CLAMP_TO_BORDER,
-	ClampToEdge	  = GL_CLAMP_TO_EDGE,
-	Repeat		  = GL_REPEAT,
-	Mirror		  = GL_MIRRORED_REPEAT
+	ClampToBorder = GL_CLAMP_TO_BORDER, /// Clamps the texture coordinate at the border. Will include a border.
+	ClampToEdge	  = GL_CLAMP_TO_EDGE,   /// Clamps the texture coordinate at the edge of the texture.
+	Repeat		  = GL_REPEAT,          /// Repeats the texture coordinate when being larger than 1.
+	Mirror		  = GL_MIRRORED_REPEAT  /// Repeats the texture coordinate and mirrors every time for better tiling.
 }
 
-class Texture
+/// Texture for drawing using OpenGL.
+class Texture : IDisposable, IVerifiable
 {
-	public bool				 enableMipMaps = false;
+	/// Enable mipmaps. Disabled by default.
+	public bool enableMipMaps = false;
 
+	///
 	public TextureFilterMode minFilter = TextureFilterMode.Linear;
+	///
 	public TextureFilterMode magFilter = TextureFilterMode.Linear;
 
-	public TextureClampMode	 wrapX = TextureClampMode.Repeat;
-	public TextureClampMode	 wrapY = TextureClampMode.Repeat;
+	///
+	public TextureClampMode wrapX = TextureClampMode.Repeat;
+	///
+	public TextureClampMode wrapY = TextureClampMode.Repeat;
 
-	private int				 inMode, mode;
-	private uint			 _id;
-	private uint			 _width, _height;
+	private int				inMode, mode;
+	private uint			_id;
+	private uint			_width, _height;
 
+	///
 	public @property uint id()
 	{
 		return _id;
 	}
 
+	///
 	public @property uint width()
 	{
 		return _width;
 	}
 
+	///
 	public @property uint height()
 	{
 		return _height;
 	}
 
+	/// 1x1 texture containing a white pixel for solid shapes.
 	public static @property Texture white()
 	{
 		return _white;
@@ -56,18 +68,19 @@ class Texture
 
 	private static Texture _white;
 
-	public static void init()
+	public static void load()
 	{
 		_white = new Texture();
 		_white.create(1, 1, cast(ubyte[])[255, 255, 255, 255]);
 	}
 
+	///
 	public this() {}
 
+	/// Creates and loads the texture with the given filters.
 	public this(string file, TextureFilterMode min = TextureFilterMode.Linear, TextureFilterMode mag = TextureFilterMode.Linear, TextureClampMode wrapX = TextureClampMode.Repeat, TextureClampMode wrapY = TextureClampMode.Repeat)
 	{
-		if (min == TextureFilterMode.LinearMipmapLinear || min == TextureFilterMode.LinearMipmapNearest ||
-			mag == TextureFilterMode.LinearMipmapLinear || mag == TextureFilterMode.LinearMipmapNearest)
+		if (min == TextureFilterMode.LinearMipmapLinear || min == TextureFilterMode.LinearMipmapNearest)
 			enableMipMaps = true;
 		minFilter  = min;
 		magFilter  = mag;
@@ -78,14 +91,16 @@ class Texture
 
 	public ~this()
 	{
-		destroy();
+		dispose();
 	}
 
+	/// Creates a width x height texture containing the pixel data in RGBA ubyte format.
 	public void create(uint width, uint height, void[] pixels)
 	{
 		create(width, height, GL_RGBA, pixels);
 	}
 
+	/// Creates a width x height texture containing the pixel data using ubytes.
 	public void create(uint width, uint height, int mode, void[] pixels)
 	{
 		glGenTextures(1, &_id);
@@ -99,8 +114,12 @@ class Texture
 		this.mode	= mode;
 		_width		= width;
 		_height		= height;
+
+		if (!valid)
+			throw new Exception("OpenGL ErrorCode " ~ to!string(glGetError()));
 	}
 
+	///
 	public void create(uint width, uint height, int inMode, int mode, void[] pixels, int type = GL_UNSIGNED_BYTE)
 	{
 		glGenTextures(1, &_id);
@@ -114,8 +133,13 @@ class Texture
 		this.mode	= mode;
 		_width		= width;
 		_height		= height;
+
+		if (!valid)
+			throw new Exception("OpenGL ErrorCode " ~ to!string(glGetError()));
 	}
 
+	/// Use this when changing filter or wrap after creating the texture.
+	/// Calls automatically after `create`.
 	public void applyParameters()
 	{
 		bind(0);
@@ -133,12 +157,14 @@ class Texture
 		}
 	}
 
+	/// Binds the current texture to the given unit.
 	public void bind(uint unit)
 	{
 		glActiveTexture(GL_TEXTURE0 + unit);
 		glBindTexture(GL_TEXTURE_2D, _id);
 	}
 
+	/// Creates the texture from a bitmap.
 	public void fromBitmap(Bitmap bitmap, string name = "Bitmap")
 	{
 		if (!bitmap.valid)
@@ -154,6 +180,7 @@ class Texture
 		create(bitmap.width, bitmap.height, mode, bitmap.surface.pixels[0 .. bitmap.width * bitmap.height * bitmap.surface.format.BytesPerPixel]);
 	}
 
+	/// Resizes the texture containing the new data.
 	public void resize(uint width, uint height, void[] pixels = null)
 	{
 		bind(0);
@@ -162,8 +189,16 @@ class Texture
 		_height = height;
 	}
 
-	public void destroy()
+	///
+	public void dispose()
 	{
-		glDeleteTextures(1, &_id);
+		if (valid)
+			glDeleteTextures(1, &_id);
+	}
+
+	///
+	public @property bool valid()
+	{
+		return _id > 0;
 	}
 }

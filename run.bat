@@ -1,2 +1,2 @@
-cd /d D:\GitRepos\D2DGame\
-dub
+cd /d %~dp0
+dub --build=unittest

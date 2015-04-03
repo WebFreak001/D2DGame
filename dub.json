@@ -4,26 +4,6 @@
 	"copyright": "Copyright © 2015, WebFreak001",
 	"authors": ["WebFreak001"],
 	"license": "GPL-2.0",
-	"buildTypes":
-	{
-		"debug":
-		{
-			"buildOptions": ["debugMode", "debugInfo", "debugInfoC", "alwaysStackFrame", "stackStomping"]
-		},
-		"debug-profile":
-		{
-			"buildOptions": ["debugMode", "debugInfo", "debugInfoC", "profile", "alwaysStackFrame", "stackStomping"]
-		},
-		"release":
-		{
-			"buildOptions": ["releaseMode", "inline", "optimize"]
-		},
-		"docs":
-		{
-			"buildOptions": ["syntaxOnly"],
-			"dflags": ["-c", "-Dddocs"]
-		}
-	},
 	"configurations": [
 	{
 		"name": "Demo",
@@ -39,6 +19,7 @@
 		"sourcePaths": ["source/"],
 		"importPaths": ["source/"]
 	}],
+	"dflags": ["-Xfdocs/index.json"],
 	"dependencies":
 	{
 		"derelict-sdl2": "~>1.9.4",

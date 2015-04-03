@@ -4,32 +4,81 @@ import D2D;
 
 import std.math : abs;
 
+/// Event structure on Window Events.
 struct WindowEvent
 {
 	enum Type
 	{
 		Undefined,
+		///
 		Close,
-		Resized, Moved,
-		LostFocus, GainedFocus,
-		Shown, Hidden,
-		Minimized, Maximized, Restored,
+		///
+		Resized,
+		///
+		Moved,
+		///
+		LostFocus,
+		///
+		GainedFocus,
+		///
+		Shown,
+		///
+		Hidden,
+		///
+		Minimized,
+		///
+		Maximized,
+		///
+		Restored,
+		///
 		TextEntered,
-		KeyPressed, KeyReleased,
-		MouseWheelMoved, MouseButtonPressed, MouseButtonReleased, MouseMoved, MouseEntered, MouseLeft,
-		ControllerButtonPressed, ControllerButtonReleased, ControllerAxis, ControllerConnected, ControllerDisconnected,
+		///
+		KeyPressed,
+		///
+		KeyReleased,
+		///
+		MouseWheelMoved,
+		///
+		MouseButtonPressed,
+		///
+		MouseButtonReleased,
+		///
+		MouseMoved,
+		///
+		MouseEntered,
+		///
+		MouseLeft,
+		///
+		ControllerButtonPressed,
+		///
+		ControllerButtonReleased,
+		///
+		ControllerAxis,
+		///
+		ControllerConnected,
+		///
+		ControllerDisconnected,
+		///
 		Quit
 	}
 
 	Type   type;
 
-	int	   x, y;
-	int	   xrel, yrel;
+	/// x/y/width/height in events.
+	int	   x, y;       /// ditto
+	/// Relative mouse coordinates in Mouse events.
+	int	   xrel, yrel; /// ditto
+	/// Mouse button in Mouse events.
 	int	   mousebutton;
+	/// Key in Controller and Keyboard events.
 	int	   key;
+	/// Controller id in Controller* event.
 	int	   controllerID;
+	/// Axis id in ControllerAxis event.
 	int	   axis;
+	/// Axis value in ControllerAxis event.
 	short  axisValue;
+	/// Text contained in TextEntered event.
 	string text;
 
 	void   fromSDL(const ref SDL_Event event)
@@ -165,6 +214,19 @@ struct WindowEvent
 		default: break;
 		}
 	}
+}
+
+///
+unittest
+{
+	SDL_Event	source;
+	WindowEvent event;
+	source.type			  = SDL_KEYDOWN;
+	source.key.keysym.sym = 42;
+	event.fromSDL(source);
+
+	assert(event.type == WindowEvent.Type.KeyPressed);
+	assert(event.key == 42);
 }
 
 alias Event = WindowEvent;

@@ -2,6 +2,9 @@ module D2DGame.Rendering.Color;
 
 import D2D;
 
+/// Color structure for Bitmaps and converting HSL -> RGB and Hex -> float[3].
+/// Can be converted to a `SDL_Color`.
+/// Only contains RGB Colors.
 struct Color
 {
 	public static const Color AliceBlue			   = Color.fromRGB(0xF0F8FF);
@@ -146,6 +149,7 @@ struct Color
 	public static const Color Yellow			   = Color.fromRGB(0xFFFF00);
 	public static const Color YellowGreen		   = Color.fromRGB(0x9ACD32);
 
+	///
 	public this(ubyte r, ubyte g, ubyte b)
 	{
 		_r = r;
@@ -153,28 +157,23 @@ struct Color
 		_b = b;
 	}
 
-	deprecated ("Use fromRGB instead")
-	public static Color fromHex(const int hex)
-	{
-		return Color((hex >> 16) & 0xFF, (hex >> 8) & 0xFF, hex & 0xFF);
-	}
-
+	///
 	public static Color fromRGB(const int hex)
 	{
 		return Color((hex >> 16) & 0xFF, (hex >> 8) & 0xFF, hex & 0xFF);
 	}
 
+	///
 	public static Color fromBGR(const int hex)
 	{
 		return Color(hex & 0xFF, (hex >> 8) & 0xFF, (hex >> 16) & 0xFF);
 	}
 
-	/// <summary>
 	/// Converts from HSL to RGB
-	/// <param name="hue">Hue in range 0 - 1</param>
-	/// <param name="saturation">Saturation in range 0 - 1</param>
-	/// <param name="lightness">Lightness in range 0 - 1</param>
-	/// </summary>
+	/// Params:
+	///     hue =        Hue in range 0 - 1
+	///     saturation = Saturation in range 0 - 1
+	///     lightness =  Lightness in range 0 - 1
 	public void fromHSL(double hue, double saturation, double lightness)
 	{
 		double v = lightness <= 0.5 ? (lightness * (1 + saturation)) : (1 + saturation - lightness * saturation);
@@ -237,51 +236,67 @@ struct Color
 		_b = cast(ubyte) (b * 255);
 	}
 
+	///
 	public override bool opEquals()(auto ref const Color color) const
 	{
 		return _r == color._r && _g == color._g && _b == color._b;
 	}
 
+	/// Creates an SDL_Color from `this`.
 	public @property SDL_Color sdl_color()
 	{
 		return SDL_Color(_r, _g, _b, 255);
 	}
 
+	/// Red value in range 0 - 255 as a ubyte.
 	public @property ref ubyte R()
 	{
 		return _r;
 	}
+
+	/// Green value in range 0 - 255 as a ubyte.
 	public @property ref ubyte G()
 	{
 		return _g;
 	}
+
+	/// Blue value in range 0 - 255 as a ubyte.
 	public @property ref ubyte B()
 	{
 		return _b;
 	}
 
+	/// Red value in range 0 - 1 as a float.
 	public @property float fR()
 	{
 		return _r * 0.00392156862f;
 	}
+
+	/// Green value in range 0 - 1 as a float.
 	public @property float fG()
 	{
 		return _g * 0.00392156862f;
 	}
+
+	/// Blue value in range 0 - 1 as a float.
 	public @property float fB()
 	{
 		return _b * 0.00392156862f;
 	}
 
+	/// RGB in range 0 - 1 as vec3
 	public @property vec3 f()
 	{
 		return vec3(fR, fG, fB);
 	}
 
+	/// Color as RGB hex.
 	public @property int RGB()
 	{
 		return _r << 16 | _g << 8 | _b;
 	}
+
+	/// Color as BGR hex.
 	public @property int BGR()
 	{
 		return _r | _g << 8 | _b << 16;

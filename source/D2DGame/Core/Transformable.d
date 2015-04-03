@@ -2,6 +2,7 @@ module D2DGame.Core.Transformable;
 
 import D2D;
 
+/// Base class for Drawables containing code for rotation, scaling and translation around an origin.
 class Transformable
 {
 private:
@@ -13,18 +14,21 @@ private:
 	bool  _needsChange = true;
 public:
  @nogc:
+	///
 	void rotate(float amount)
 	{
 		_rotation	+= amount;
 		_needsChange = true;
 	}
 
+	///
 	void scale(vec2 amount)
 	{
 		_scale		+= amount;
 		_needsChange = true;
 	}
 
+	///
 	void move(vec2 amount)
 	{
 		_position	+= amount;
@@ -32,6 +36,7 @@ public:
 	}
 
  @property:
+	///
 	mat4 transform()
 	{
 		if (_needsChange)
@@ -45,45 +50,53 @@ public:
 		return _transform;
 	}
 
+	///
 	void position(vec2 position)
 	{
 		_position	 = position;
 		_needsChange = true;
 	}
 
+	///
 	vec2 position()
 	{
 		return _position;
 	}
 
+	///
 	void origin(vec2 origin)
 	{
 		_origin		 = origin;
 		_needsChange = true;
 	}
 
+	///
 	vec2 origin()
 	{
 		return _origin;
 	}
 
-	void scale(vec2 scale)
+	///
+	void scaling(vec2 scale)
 	{
 		_scale		 = scale;
 		_needsChange = true;
 	}
 
-	vec2 scale()
+	///
+	vec2 scaling()
 	{
 		return _scale;
 	}
 
+	///
 	void rotation(float rotation)
 	{
 		_rotation	 = rotation;
 		_needsChange = true;
 	}
 
+	///
 	float rotation()
 	{
 		return _rotation;

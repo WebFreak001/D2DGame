@@ -2,17 +2,28 @@ module D2DGame.Rendering.RectangleShape;
 
 import D2D;
 
+/**
+ * A resizable rectangle containing a texture.
+ * Examples:
+ * ---
+ * auto rect = new RectangleShape();
+ * rect.setSize(vec2(100, 50)); // 100x50 px
+ * window.draw(rect);
+ * ---
+ */
 class RectangleShape : Shape
 {
 private:
 
-	Mesh _mesh;
+	Mesh _mesh; // TODO: Only 1 Mesh
 public:
 	this()
 	{
 		_mesh = new Mesh();
+		setSize(vec2(1, 1));
 	}
 
+	/// Sets the new size and creates a new mesh after disposing the old mesh.
 	void setSize(const vec2 size)
 	{
 		_mesh.dispose();
@@ -23,6 +34,7 @@ public:
 		_mesh.create();
 	}
 
+	/// Sets the current transformation matrix and draws this onto the target.
 	override void draw(IRenderTarget target, ShaderProgram shader = null)
 	{
 		matrixStack.push();
