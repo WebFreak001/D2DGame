@@ -34,7 +34,8 @@ class Shuriken : RectangleShape
 		matrixStack.top = matrixStack.top * transform;
 		if (texture !is null)
 			texture.bind(0);
-		shader.set("invTransWorld", transform.inverse().transposed());
+		shader.bind();
+		shader.set("invTransWorld", matrixStack.top.inverse().transposed());
 		target.draw(_mesh, shader);
 		matrixStack.pop();
 	}
