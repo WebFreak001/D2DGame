@@ -51,6 +51,14 @@ class Shader : IVerifiable
 		return true;
 	}
 
+	static Shader create(ShaderType type, string content)
+	{
+		Shader shader = new Shader();
+		shader.load(type, content);
+		shader.compile();
+		return shader;
+	}
+
 	/// Compiles the shader and throws an Exception if an error occured.
 	/// Will automatically be called when attaching the shader to a ShaderProgram instance.
 	public bool compile()

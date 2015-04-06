@@ -62,48 +62,80 @@ class ShaderProgram : IVerifiable
 	///
 	public void set(string uniform, int value)
 	{
+		debug if ((uniform in _properties) is null)
+			{
+				throw new Exception("Uniform '" ~ uniform ~ "' is not defined!");
+			}
 		glUniform1i(_properties[uniform], value);
 	}
 
 	///
 	public void set(string uniform, float value)
 	{
+		debug if ((uniform in _properties) is null)
+			{
+				throw new Exception("Uniform '" ~ uniform ~ "' is not defined!");
+			}
 		glUniform1f(_properties[uniform], value);
 	}
 
 	///
 	public void set(string uniform, vec2 value)
 	{
+		debug if ((uniform in _properties) is null)
+			{
+				throw new Exception("Uniform '" ~ uniform ~ "' is not defined!");
+			}
 		glUniform2fv(_properties[uniform], 1, value.value_ptr);
 	}
 
 	///
 	public void set(string uniform, vec3 value)
 	{
+		debug if ((uniform in _properties) is null)
+			{
+				throw new Exception("Uniform '" ~ uniform ~ "' is not defined!");
+			}
 		glUniform3fv(_properties[uniform], 1, value.value_ptr);
 	}
 
 	///
 	public void set(string uniform, vec4 value)
 	{
+		debug if ((uniform in _properties) is null)
+			{
+				throw new Exception("Uniform '" ~ uniform ~ "' is not defined!");
+			}
 		glUniform4fv(_properties[uniform], 1, value.value_ptr);
 	}
 
 	///
 	public void set(string uniform, mat2 value)
 	{
+		debug if ((uniform in _properties) is null)
+			{
+				throw new Exception("Uniform '" ~ uniform ~ "' is not defined!");
+			}
 		glUniformMatrix2fv(_properties[uniform], 1, 1, value.value_ptr);
 	}
 
 	///
 	public void set(string uniform, mat3 value)
 	{
+		debug if ((uniform in _properties) is null)
+			{
+				throw new Exception("Uniform '" ~ uniform ~ "' is not defined!");
+			}
 		glUniformMatrix3fv(_properties[uniform], 1, 1, value.value_ptr);
 	}
 
 	///
 	public void set(string uniform, mat4 value)
 	{
+		debug if ((uniform in _properties) is null)
+			{
+				throw new Exception("Uniform '" ~ uniform ~ "' is not defined!");
+			}
 		glUniformMatrix4fv(_properties[uniform], 1, 1, value.value_ptr);
 	}
 

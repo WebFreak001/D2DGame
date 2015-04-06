@@ -18,18 +18,25 @@ class Shuriken : RectangleShape
 			offs = offs.normalized();
 		if (offs.length > 10)
 			offs = offs.normalized() * 10;
-		origin		  = vec2(40, 40);
+		origin		  = vec2(64, 64);
 		this.rotation = rotation;
-		rotaSpeed	  = max(0.1f, offs.length * 0.05f);
+		rotaSpeed	  = 0.1f * max(0.1f, offs.length * 0.05f);
 		position	  = vec2(x, y);
-		setSize(vec2(80, 80));
+		setSize(vec2(128, 128));
 	}
 
 	override void draw(IRenderTarget target, ShaderProgram shader = null)
 	{
 		move(offs);
 		rotate(rotaSpeed);
-		super.draw(target, shader);
+
+		matrixStack.push();
+		matrixStack.top = matrixStack.top * transform;
+		if (texture !is null)
+			texture.bind(0);
+		shader.set("invTransWorld", transform.inverse().transposed());
+		target.draw(_mesh, shader);
+		matrixStack.pop();
 	}
 
 	@property bool isIn()
@@ -42,17 +49,32 @@ void main()
 {
 	Window window = new Window(1280, 720);
 	window.setIcon(Bitmap.load("res/shuriken-icon.png"));
-	shurikenTex = new Texture("res/tex/shuriken.png", TextureFilterMode.LinearMipmapLinear, TextureFilterMode.Linear, TextureClampMode.ClampToEdge, TextureClampMode.ClampToEdge);
+	shurikenTex = new Texture("res/tex/shuriken-color.png", TextureFilterMode.LinearMipmapLinear, TextureFilterMode.Linear, TextureClampMode.ClampToEdge, TextureClampMode.ClampToEdge);
 
-	Shuriken[] shuriken;
-	Shuriken   mouse = new Shuriken(0, 0, 0, 0, 0);
+	Shuriken[]	  shuriken;
+	Shuriken	  mouse = new Shuriken(0, 0, 0, 0, 0);
 
-	int		   lastX, lastY;
-	int		   currentX, currentY;
-	bool	   clicked = false;
-	FPSLimiter limiter = new FPSLimiter(60);
+	int			  lastX, lastY;
+	int			  currentX, currentY;
+	bool		  clicked = false;
+	FPSLimiter	  limiter = new FPSLimiter(60);
 
-	Event	   event;
+	ShaderProgram shader = new ShaderProgram();
+	shader.attach(Shader.create(ShaderType.Vertex, import ("default.vert")));
+	shader.attach(Shader.create(ShaderType.Fragment, import ("normal.frag")));
+	shader.link();
+	shader.registerUniform("projection");
+	shader.registerUniform("transform");
+	shader.registerUniform("tex");
+	shader.registerUniform("tex2");
+	shader.registerUniform("invTransWorld");
+
+	shader.set("tex", 0);
+	shader.set("tex2", 1);
+
+	Texture normal = new Texture("res/tex/shuriken-normal.png", TextureFilterMode.LinearMipmapLinear, TextureFilterMode.Linear, TextureClampMode.ClampToEdge, TextureClampMode.ClampToEdge);
+
+	Event	event;
 	while (window.open)
 	{
 		while (window.pollEvent(event))
@@ -83,7 +105,8 @@ void main()
 
 		for (int i = shuriken.length - 1; i >= 0; i--)
 		{
-			window.draw(shuriken[i]);
+			normal.bind(1);
+			window.draw(shuriken[i], shader);
 			if (!shuriken[i].isIn)
 				shuriken = shuriken.remove!(o => o == shuriken[i])();
 		}
@@ -91,7 +114,8 @@ void main()
 		if (clicked)
 		{
 			mouse.position = vec2(currentX, currentY);
-			window.draw(mouse);
+			normal.bind(1);
+			window.draw(mouse, shader);
 		}
 
 		window.display();

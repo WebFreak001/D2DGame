@@ -19,7 +19,7 @@ import std.datetime;
  */
 class FPSLimiter
 {
-private:
+protected:
 	int	 _fps	 = 0;
 	int	 _skipms = 0;
 	long _next	 = 0;

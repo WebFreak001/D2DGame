@@ -1,3 +1,27 @@
+/** Module for including all D2DGame components.
+ * Examples:
+ * ---
+ * import D2D;
+ *
+ * void main()
+ * {
+ *     Window window = new Window();
+ *
+ *     Event event; // Or WindowEvent
+ *     while(window.open)
+ *     {
+ *         while (window.pollEvent(event))
+ *         {
+ *             if(event.type = Event.Type.Quit)
+ *                 window.close();
+ *         }
+ *         window.clear();
+ *
+ *         window.display();
+ *     }
+ * }
+ * ---
+ */
 module D2D;
 
 public

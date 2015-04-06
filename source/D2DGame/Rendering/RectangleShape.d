@@ -13,7 +13,7 @@ import D2D;
  */
 class RectangleShape : Shape
 {
-private:
+protected:
 
 	Mesh _mesh; // TODO: Only 1 Mesh
 public:
