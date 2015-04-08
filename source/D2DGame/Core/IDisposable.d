@@ -6,15 +6,15 @@ module D2DGame.Core.IDisposable;
  * ---
  * class A : IDisposable
  * {
- *  ~this()
- *  {
- *      dispose();
- *  }
+ *     ~this()
+ *     {
+ *         dispose();
+ *     }
  *
- *  public void dispose()
- *  {
- *      // Delete Native Stuff
- *  }
+ *     public void dispose()
+ *     {
+ *         // Delete Native Stuff
+ *     }
  * }
  * ---
  */

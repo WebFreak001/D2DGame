@@ -10,10 +10,10 @@ import std.datetime;
  * FPSLimiter limiter = new FPSLimiter(25);
  * while(window.open)
  * {
- *   window.clear();
- *   // Draw and Update stuff
- *   window.display();
- *   limiter.wait();
+ *     window.clear();
+ *     // Draw and Update stuff
+ *     window.display();
+ *     limiter.wait();
  * }
  * ---
  */

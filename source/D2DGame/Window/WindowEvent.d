@@ -7,67 +7,70 @@ import std.math : abs;
 /// Event structure on Window Events.
 struct WindowEvent
 {
+	///
 	enum Type
 	{
 		Undefined,
-		///
+		/// Occurs when X button is clicked.
 		Close,
-		///
+		/// Occurs when window got resized.
 		Resized,
-		///
+		/// Occurs when window got moved.
 		Moved,
-		///
+		/// Occurs when window lost focus.
 		LostFocus,
-		///
+		/// Occurs when window gained focus again.
 		GainedFocus,
-		///
+		/// Occurs when `window.show` got called.
 		Shown,
-		///
+		/// Occurs when `window.hide` got called.
 		Hidden,
-		///
+		/// Occurs when the window minimizes.
 		Minimized,
-		///
+		/// Occurs when the window maximizes.
 		Maximized,
-		///
+		/// Occurs when the window restores from minimized/maximized state.
 		Restored,
-		///
+		/// Occurs when the user typed some text on the keyboard for text fields.
 		TextEntered,
-		///
+		/// Occurs when the user presses a key on the keyboard. Will fire repeatedly when held down.
 		KeyPressed,
-		///
+		/// Occurs when the user releases a key on the keyboard.
 		KeyReleased,
-		///
+		/// Occurs when the user scrolled.
 		MouseWheelMoved,
-		///
+		/// Occurs when the user pressed a mouse button.
 		MouseButtonPressed,
-		///
+		/// Occurs when the user released a mouse button.
 		MouseButtonReleased,
-		///
+		/// Occurs when the user moved the mouse.
 		MouseMoved,
-		///
+		/// Occurs when the mouse hovers over the window.
 		MouseEntered,
-		///
+		/// Occurs when the mouse no longer hovers over the window
 		MouseLeft,
-		///
+		/// Occurs when a button on a controller got pressed.
 		ControllerButtonPressed,
-		///
+		/// Occurs when a button on a controller got released.
 		ControllerButtonReleased,
-		///
+		/// Occurs when an axis on a controller got moved.
 		ControllerAxis,
-		///
+		/// Occurs when a controller connected.
 		ControllerConnected,
-		///
+		/// Occurs when a controller disconnected.
 		ControllerDisconnected,
-		///
+		/// Occurs when window is closing.
 		Quit
 	}
 
 	Type   type;
 
-	/// x/y/width/height in events.
-	int	   x, y;       /// ditto
+	/// x/width in events.
+	int	   x;
+	/// y/height in events.
+	int	   y;
 	/// Relative mouse coordinates in Mouse events.
-	int	   xrel, yrel; /// ditto
+	int	   xrel, yrel;
 	/// Mouse button in Mouse events.
 	int	   mousebutton;
 	/// Key in Controller and Keyboard events.
@@ -81,6 +84,7 @@ struct WindowEvent
 	/// Text contained in TextEntered event.
 	string text;
 
+	/// Function for converting a SDL event to a WindowEvent
 	void   fromSDL(const ref SDL_Event event)
 	{
 		switch (event.type)
@@ -211,7 +215,9 @@ struct WindowEvent
 		case SDL_QUIT:
 			type = Type.Quit;
 			break;
-		default: break;
+		default:
+			type = Type.Undefined;
+			break;
 		}
 	}
 }
