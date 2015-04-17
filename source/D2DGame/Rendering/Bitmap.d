@@ -7,27 +7,31 @@ class Bitmap : IVerifiable, IDisposable
 {
 	private SDL_Surface* _handle;
 
-	///
+	/// Handle to the `SDL_Surface*`.
 	public @property SDL_Surface* surface()
 	{
 		return _handle;
 	}
 
-	///
+	/// Checks if the handle is not null.
 	public @property bool valid()
 	{
 		return _handle !is null;
 	}
 
-	///
+	/// Width of this bitmap. Returns 0 if invalid.
 	public @property int width()
 	{
+		if (!valid)
+			return 0;
 		return _handle.w;
 	}
 
-	///
+	/// Height of this bitmap. Returns 0 if invalid.
 	public @property int height()
 	{
+		if (!valid)
+			return 0;
 		return _handle.h;
 	}
 
@@ -36,10 +40,10 @@ class Bitmap : IVerifiable, IDisposable
 		_handle = surface;
 	}
 
-	///
-	public this(int width, int height, int depth)
+	/// Creates a new width x height bitmap with a specified bit depth.
+	public this(int width, int height, int depth = 24, int redChannel = 0, int greenChannel = 0, int blueChannel = 0, int alphaChannel = 0)
 	{
-		_handle = SDL_CreateRGBSurface(0, width, height, depth, 0, 0, 0, 0);
+		_handle = SDL_CreateRGBSurface(0, width, height, depth, redChannel, greenChannel, blueChannel, alphaChannel);
 	}
 
 	public ~this()
@@ -47,10 +51,10 @@ class Bitmap : IVerifiable, IDisposable
 		dispose();
 	}
 
-	///
-	public this(void[] pixels, int width, int height, int depth)
+	/// Creates a new width x height bitmap with a specified bit depth containing pixel data.
+	public this(void[] pixels, int width, int height, int depth = 24, int redChannel = 0, int greenChannel = 0, int blueChannel = 0, int alphaChannel = 0)
 	{
-		_handle = SDL_CreateRGBSurfaceFrom(pixels.ptr, width, height, depth, width * (depth >> 3), 0, 0, 0, 0);
+		_handle = SDL_CreateRGBSurfaceFrom(pixels.ptr, width, height, depth, width * (depth >> 3), redChannel, greenChannel, blueChannel, alphaChannel);
 	}
 
 	/// Creates a bitmap from a `SDL_Surface*`.
@@ -59,7 +63,7 @@ class Bitmap : IVerifiable, IDisposable
 		return new Bitmap(surface);
 	}
 
-	///
+	/// Loads a png/webp/tiff/bmp from a file on the filesystem.
 	public static Bitmap load(string file)
 	{
 		Bitmap bmp = new Bitmap(IMG_Load(file.toStringz()));
@@ -70,7 +74,7 @@ class Bitmap : IVerifiable, IDisposable
 		return bmp;
 	}
 
-	///
+	/// Deallocates the memory and invalidates `this`.
 	public void dispose()
 	{
 		if (valid)
@@ -98,6 +102,12 @@ class Bitmap : IVerifiable, IDisposable
 		return SDL_MapRGB(_handle.format, color.R, color.G, color.B);
 	}
 
+	/// Gets the rgb hex from the color based on the bitmap format.
+	public uint mapRGBA(ubyte r, ubyte g, ubyte b, ubyte a)
+	{
+		return SDL_MapRGBA(_handle.format, r, g, b, a);
+	}
+
 	/// Fills the entire bitmap with one color.
 	public void fill(Color color)
 	{
@@ -110,7 +120,7 @@ class Bitmap : IVerifiable, IDisposable
 		SDL_FillRect(_handle, new SDL_Rect(x, y, width, height), mapRGB(color));
 	}
 
-	/// Gets the color at position x, y. (0, 0) is top left.
+	/// Gets the RGB color at position x, y. (0, 0) is top left.
 	public Color getPixel(int x, int y)
 	{
 		ubyte r, g, b;
@@ -118,9 +128,23 @@ class Bitmap : IVerifiable, IDisposable
 		return Color(r, g, b);
 	}
 
-	/// Sets the color at position x, y. (0, 0) is top left.
+	/// Gets the RGBA color at position x, y as R, G, B, A ubyte array. (0, 0) is top left.
+	public ubyte[] getPixelRGBA(int x, int y)
+	{
+		ubyte r, g, b, a;
+		SDL_GetRGBA((cast(uint*) _handle.pixels)[x + y * width], _handle.format, &r, &g, &b, &a);
+		return [r, g, b, a];
+	}
+
+	/// Sets the RGB color at position x, y. (0, 0) is top left.
 	public void setPixel(int x, int y, Color color)
 	{
 		(cast(uint*) _handle.pixels)[x + y * width] = mapRGB(color);
+	}
+
+	/// Sets the RGBA color at position x, y. (0, 0) is top left.
+	public void setPixelRGBA(int x, int y, ubyte r, ubyte g, ubyte b, ubyte a)
+	{
+		(cast(uint*) _handle.pixels)[x + y * width] = mapRGBA(r, g, b, a);
 	}
 }

@@ -2,7 +2,7 @@ module D2DGame.Window.Window;
 
 import D2D;
 
-/// Single-Window class wrapping SDL_Window
+/// Single-Window class wrapping SDL_Window.
 class Window : IVerifiable, IDisposable, IRenderTarget
 {
 private:
@@ -15,19 +15,19 @@ private:
 	mat4		   _postMatrix;
 
 public:
-	///
+	/// Static variable to a SDL GL Context.
 	static SDL_GLContext glContext = null;
 
-	///
+	/// Creates a new centered window with specified title and flags on a 800x480 resolution.
 	this(string title = "D2DGame", uint flags = WindowFlags.Default) { this(800, 480, title, flags); }
 
-	///
+	/// Creates a new centered window with specified dimensions, title and flags.
 	this(int width, int height, string title = "D2DGame", uint flags = WindowFlags.Default)
 	{
 		this(SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, title, flags);
 	}
 
-	///
+	/// Creates a new window with specified parameters.
 	this(int x, int y, int width, int height, string title, uint flags = WindowFlags.Default)
 	{
 		DerelictSDL2.load();
@@ -159,27 +159,27 @@ public:
 		SDL_GL_SwapWindow(_handle);
 	}
 
-	///
+	/// Dynamically sets the title of the window.
 	@property void title(string title)
 	{
 		SDL_SetWindowTitle(_handle, title.toStringz());
 	}
 
-	///
+	/// Dynamically gets the title of the window.
 	@property string title()
 	{
 		string title = SDL_GetWindowTitle(_handle).fromStringz().dup;
 		return title;
 	}
 
-	///
+	/// Dynamically sets the width of the window.
 	@property void width(int width)
 	{
 		SDL_SetWindowSize(_handle, width, height);
 		resize(width, height);
 	}
 
-	///
+	/// Dynamically gets the width of the window.
 	@property int width()
 	{
 		int x, y;
@@ -187,14 +187,14 @@ public:
 		return x;
 	}
 
-	///
+	/// Dynamically sets the height of the window.
 	@property void height(int height)
 	{
 		SDL_SetWindowSize(_handle, width, height);
 		resize(width, height);
 	}
 
-	///
+	/// Dynamically gets the height of the window.
 	@property int height()
 	{
 		int x, y;
@@ -202,13 +202,13 @@ public:
 		return y;
 	}
 
-	///
+	/// Dynamically sets the maximum width of the window.
 	@property void maxWidth(int maxWidth)
 	{
 		SDL_SetWindowMaximumSize(_handle, maxWidth, maxHeight);
 	}
 
-	///
+	/// Dynamically gets the maximum width of the window.
 	@property int maxWidth()
 	{
 		int x, y;
@@ -216,13 +216,13 @@ public:
 		return x;
 	}
 
-	///
+	/// Dynamically sets the maximum height of the window.
 	@property void maxHeight(int maxHeight)
 	{
 		SDL_SetWindowMaximumSize(_handle, maxWidth, maxHeight);
 	}
 
-	///
+	/// Dynamically gets the maximum height of the window.
 	@property int maxHeight()
 	{
 		int x, y;
@@ -230,13 +230,13 @@ public:
 		return y;
 	}
 
-	///
+	/// Dynamically sets the minimum width of the window.
 	@property void minWidth(int minWidth)
 	{
 		SDL_SetWindowMinimumSize(_handle, minWidth, minHeight);
 	}
 
-	///
+	/// Dynamically gets the minimum width of the window.
 	@property int minWidth()
 	{
 		int x, y;
@@ -244,13 +244,13 @@ public:
 		return x;
 	}
 
-	///
+	/// Dynamically sets the minimum height of the window.
 	@property void minHeight(int minHeight)
 	{
 		SDL_SetWindowMinimumSize(_handle, minWidth, minHeight);
 	}
 
-	///
+	/// Dynamically gets the minimum height of the window.
 	@property int minHeight()
 	{
 		int x, y;
@@ -258,13 +258,13 @@ public:
 		return y;
 	}
 
-	///
+	/// Dynamically sets the x position of the window.
 	@property void x(int x)
 	{
 		SDL_SetWindowPosition(_handle, x, y);
 	}
 
-	///
+	/// Dynamically gets the x position of the window.
 	@property int x()
 	{
 		int x, y;
@@ -272,13 +272,13 @@ public:
 		return x;
 	}
 
-	///
+	/// Dynamically sets the y position of the window.
 	@property void y(int y)
 	{
 		SDL_SetWindowPosition(_handle, x, y);
 	}
 
-	///
+	/// Dynamically gets the y position of the window.
 	@property int y()
 	{
 		int x, y;
@@ -298,13 +298,13 @@ public:
 		SDL_HideWindow(_handle);
 	}
 
-	///
-	void minimized()
+	/// Minimizes the window.
+	void minimize()
 	{
 		SDL_MinimizeWindow(_handle);
 	}
 
-	///
+	/// Maximizes the window.
 	void maximize()
 	{
 		SDL_MaximizeWindow(_handle);
@@ -316,7 +316,7 @@ public:
 		SDL_RestoreWindow(_handle);
 	}
 
-	///
+	/// Raises the window to top and focuses it for input.
 	void focus()
 	{
 		SDL_RaiseWindow(_handle);
@@ -329,26 +329,29 @@ public:
 	}
 
 	/// Closes the window and invalidates it.
+	/// See_Also: Window.close
 	void dispose()
 	{
 		SDL_DestroyWindow(_handle);
 		_handle = null;
 	}
 
-	/// See_Also: dispose
+	/// Closes the window and invalidates it.
+	/// See_Also: Window.dispose
 	void close()
 	{
 		dispose();
 	}
 
-	/// Returns if the window exists
-	/// See_Also: valid
+	/// Returns if the is still open.
+	/// See_Also: Window.valid
 	@property bool open()
 	{
 		return valid;
 	}
 
-	/// Checks if the window is still open.
+	/// Returns if the window is still open.
+	/// See_Also: Window.open
 	@property bool valid()
 	{
 		return _handle !is null;

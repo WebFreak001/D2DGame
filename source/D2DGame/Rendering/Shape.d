@@ -5,12 +5,12 @@ import D2D;
 /// Base class for Shapes.
 class Shape : Transformable, IDrawable
 {
-	/// Abstract draw function.
+	/// Abstract draw function called from `IRenderTarget`.
 	abstract void draw(IRenderTarget target, ShaderProgram shader = null)
 	{
 	}
 
-	/// The assigned texture.
+	/// Property holding the assigned texture.
 	public @property ref Texture texture()
 	{
 		return _texture;

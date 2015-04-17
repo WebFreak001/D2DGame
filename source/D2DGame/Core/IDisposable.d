@@ -20,6 +20,6 @@ module D2DGame.Core.IDisposable;
  */
 interface IDisposable
 {
-	///
+	/// Function for deallocating memory. Should be called in destructor.
 	public void dispose();
 }

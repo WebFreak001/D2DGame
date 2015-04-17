@@ -62,6 +62,8 @@ public
 	import D2DGame.Rendering.Shape;
 	import D2DGame.Rendering.RectangleShape;
 
+	import D2DGame.Toolkit.Game;
+
 	import std.string;
 	import std.typecons;
 }

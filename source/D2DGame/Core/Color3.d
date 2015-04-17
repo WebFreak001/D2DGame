@@ -107,7 +107,7 @@ class Color3
 	alias GoldenRod = TypeTuple!(0.8549019607843137, 0.6470588235294118, 0.12549019607843137);
 	/// HTML Color: <span style='background-color: Gray;'>Gray</span>
 	alias Gray = TypeTuple!(0.5019607843137255, 0.5019607843137255, 0.5019607843137255);
-	/// HTML Color: <span style='background-color: Green;'>Green</span>
+	/// HTML Color: <span style='background-color: Green; color: White;'>Green</span>
 	alias Green = TypeTuple!(0, 0.5019607843137255, 0);
 	/// HTML Color: <span style='background-color: GreenYellow;'>GreenYellow</span>
 	alias GreenYellow = TypeTuple!(0.6784313725490196, 1, 0.1843137254901961);

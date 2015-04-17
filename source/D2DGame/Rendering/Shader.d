@@ -2,7 +2,7 @@ module D2DGame.Rendering.Shader;
 
 import D2D;
 
-///
+/// All valid types of shaders for the `Shader` class.
 enum ShaderType : ubyte
 {
 	/// Vertex Shader
@@ -51,6 +51,7 @@ class Shader : IVerifiable
 		return true;
 	}
 
+	/// Creates a shader, loads the content and compiles it in one function.
 	static Shader create(ShaderType type, string content)
 	{
 		Shader shader = new Shader();
@@ -83,13 +84,13 @@ class Shader : IVerifiable
 		return true;
 	}
 
-	///
+	/// The OpenGL id of this shader.
 	public @property uint id()
 	{
 		return _id;
 	}
 
-	///
+	/// Checks if this shader is valid.
 	public @property bool valid()
 	{
 		return _id > 0;

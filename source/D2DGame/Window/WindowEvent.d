@@ -7,7 +7,7 @@ import std.math : abs;
 /// Event structure on Window Events.
 struct WindowEvent
 {
-	///
+	/// Types that can occur when WindowEvents are fired.
 	enum Type
 	{
 		Undefined,
@@ -235,4 +235,5 @@ unittest
 	assert(event.key == 42);
 }
 
+///
 alias Event = WindowEvent;

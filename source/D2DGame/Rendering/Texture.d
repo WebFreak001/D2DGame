@@ -2,7 +2,7 @@ module D2DGame.Rendering.Texture;
 
 import D2D;
 
-///
+/// Texture filter mode for min and mag filters.
 enum TextureFilterMode : int
 {
 	Linear				 = GL_LINEAR,                 /// `GL_LINEAR` sampling. Smooth looking textures.
@@ -13,7 +13,7 @@ enum TextureFilterMode : int
 	LinearMipmapLinear	 = GL_LINEAR_MIPMAP_LINEAR,   /// `GL_LINEAR_MIPMAP_LINEAR` sampling. Not usable in mag filter.
 }
 
-///
+/// Texture clamp mode for wrap x, wrap y, wrap z.
 enum TextureClampMode : int
 {
 	ClampToBorder = GL_CLAMP_TO_BORDER, /// Clamps the texture coordinate at the border. Will include a border.
@@ -28,33 +28,42 @@ class Texture : IDisposable, IVerifiable
 	/// Enable mipmaps. Disabled by default.
 	public bool enableMipMaps = false;
 
-	///
+	/// Min Filter for this texture.
+	/// Needs to call Texture.applyParameters when called after creation.
 	public TextureFilterMode minFilter = TextureFilterMode.Linear;
-	///
+
+	/// Mag Filter for this texture.
+	/// Needs to call Texture.applyParameters when called after creation.
 	public TextureFilterMode magFilter = TextureFilterMode.Linear;
 
-	///
+	/// Wrap x for this texture.
+	/// Needs to call Texture.applyParameters when called after creation.
 	public TextureClampMode wrapX = TextureClampMode.Repeat;
-	///
+
+	/// Wrap y Filter for this texture.
+	/// Needs to call Texture.applyParameters when called after creation.
 	public TextureClampMode wrapY = TextureClampMode.Repeat;
 
 	private int				inMode, mode;
 	private uint			_id;
 	private uint			_width, _height;
 
-	///
+	/// OpenGL id of this texture.
+	/// id == 0 when not created.
 	public @property uint id()
 	{
 		return _id;
 	}
 
-	///
+	/// Width of this texture.
+	/// width == 0 when not created.
 	public @property uint width()
 	{
 		return _width;
 	}
 
-	///
+	/// Height of this texture.
+	/// height == 0 when not created.
 	public @property uint height()
 	{
 		return _height;
@@ -74,7 +83,7 @@ class Texture : IDisposable, IVerifiable
 		_white.create(1, 1, cast(ubyte[])[255, 255, 255, 255]);
 	}
 
-	///
+	/// Only allocates memory for the instance but does not create anything.
 	public this() {}
 
 	/// Creates and loads the texture with the given filters.
@@ -119,7 +128,7 @@ class Texture : IDisposable, IVerifiable
 			throw new Exception("OpenGL ErrorCode " ~ to!string(glGetError()));
 	}
 
-	///
+	/// Creates a width x height texture containing the pixel data in `inMode` format using `type` as array type and internally convertes to `mode`.
 	public void create(uint width, uint height, int inMode, int mode, void[] pixels, int type = GL_UNSIGNED_BYTE)
 	{
 		glGenTextures(1, &_id);
@@ -189,14 +198,17 @@ class Texture : IDisposable, IVerifiable
 		_height = height;
 	}
 
-	///
+	/// Deletes the texture and invalidates `this`.
 	public void dispose()
 	{
 		if (valid)
+		{
 			glDeleteTextures(1, &_id);
+			_id = 0;
+		}
 	}
 
-	///
+	/// Checks if Texture.id is more than 0.
 	public @property bool valid()
 	{
 		return _id > 0;

@@ -26,7 +26,7 @@ protected:
 	long _sleep	 = 0;
 
 public:
-	///
+	/// Creates a new FPS Limiter instance with specified max FPS.
 	this(int maxFPS)
 	{
 		_fps	= maxFPS;
