@@ -2,14 +2,17 @@ module D2DGame.Toolkit.Game;
 
 import D2D;
 
+import std.datetime;
+
 abstract class Game
 {
 private:
-	int	   _width  = 800, _height = 480;
-	Bitmap _icon   = null;
-	Window _window = null;
-	string _title  = "Game";
-	int	   _fps	   = 60;
+	int		  _width  = 800, _height = 480;
+	Bitmap	  _icon	  = null;
+	Window	  _window = null;
+	string	  _title  = "Game";
+	int		  _fps	  = 60;
+	StopWatch _stopwatch;
 
 protected:
 	@property ref int windowWidth()
@@ -32,9 +35,9 @@ protected:
 		return _title;
 	}
 
-	@property ref string maxFPS()
+	@property ref int maxFPS()
 	{
-		return _title;
+		return _fps;
 	}
 
 	@property Window window()
@@ -100,9 +103,11 @@ public:
 
 		load();
 
-		Event event;
+		Event		 event;
+		TickDuration delta;
 		while (_window.open)
 		{
+			_stopwatch.start();
 			while (_window.pollEvent(event))
 			{
 				if (event.type == Event.Type.Quit)
@@ -111,7 +116,7 @@ public:
 					onEvent(event);
 			}
 
-			update(0);
+			update(delta.to!("seconds", float));
 
 			draw();
 
@@ -119,6 +124,10 @@ public:
 
 			if (limiter !is null)
 				limiter.wait();
+
+			_stopwatch.stop();
+			delta = _stopwatch.peek();
+			_stopwatch.reset();
 		}
 	}
 }

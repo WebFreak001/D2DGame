@@ -25,11 +25,14 @@ class Shuriken : RectangleShape
 		setSize(vec2(128, 128));
 	}
 
+	void update(float delta)
+	{
+		move(offs * delta * 100);
+		rotate(rotaSpeed * delta * 100);
+	}
+
 	override void draw(IRenderTarget target, ShaderProgram shader = null)
 	{
-		move(offs);
-		rotate(rotaSpeed);
-
 		matrixStack.push();
 		matrixStack.top = matrixStack.top * transform;
 		if (texture !is null)
@@ -62,7 +65,8 @@ public:
 	{
 		windowWidth	 = 1280;
 		windowHeight = 720;
-		windowTitle	 = "Shuriken Simulator+ EX SUPER ULTRA DELUXE EDITION OMEGA 2.WHOA";
+		windowTitle	 = "Shuriken Simulator EXTREME SUPER ULTRA DELUXE EDITION OMEGA 2.WHOA";
+		maxFPS		 = 0;
 	}
 
 	override void load()
@@ -88,6 +92,12 @@ public:
 
 	override void update(float delta)
 	{
+		for (int i = shuriken.length - 1; i >= 0; i--)
+		{
+			shuriken[i].update(delta);
+			if (!shuriken[i].isIn)
+				shuriken = shuriken.remove!(o => o == shuriken[i])();
+		}
 	}
 
 	override void onEvent(Event event)
@@ -120,8 +130,6 @@ public:
 		{
 			normal.bind(1);
 			window.draw(shuriken[i], shader);
-			if (!shuriken[i].isIn)
-				shuriken = shuriken.remove!(o => o == shuriken[i])();
 		}
 
 		if (clicked)
