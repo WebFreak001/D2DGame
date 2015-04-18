@@ -6,20 +6,19 @@
 	"license": "GPL-2.0",
 	"configurations": [
 	{
-		"name": "Demo",
-		"targetType": "executable",
-		"targetPath": "bin",
-		"sourcePaths": ["test/", "source/"],
-		"importPaths": ["test/", "source/"]
-	},
-	{
 		"name": "lib",
 		"targetType": "library",
 		"targetPath": "lib",
 		"sourcePaths": ["source/"],
 		"importPaths": ["source/"]
+	},
+	{
+		"name": "Demo",
+		"targetType": "executable",
+		"targetPath": "bin",
+		"sourcePaths": ["test/", "source/"],
+		"importPaths": ["test/", "source/"]
 	}],
-	"dflags": ["-Xfdocs/index.json"],
 	"dependencies":
 	{
 		"derelict-sdl2": "~>1.9.4",
