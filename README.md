@@ -1,2 +1,5 @@
 # D2DGame
 2D Game Engine for Ludum Dare written in D. Its similar to SFML and wraps SDL for rendering etc.
+
+## Documentation
+The documentation can be found at [http://d2d.webfreak.org/](http://d2d.webfreak.org/)
