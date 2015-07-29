@@ -12,10 +12,12 @@
  *     {
  *         while (window.pollEvent(event))
  *         {
- *             if(event.type = Event.Type.Quit)
+ *             if(event.type == Event.Type.Quit)
  *                 window.close();
  *         }
  *         window.clear();
+ *
+ *         // Update & Render here
  *
  *         window.display();
  *     }
