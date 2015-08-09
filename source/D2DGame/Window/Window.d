@@ -6,13 +6,13 @@ import D2D;
 class Window : IVerifiable, IDisposable, IRenderTarget
 {
 private:
-	SDL_Window	   * _handle;
-	int			   _id;
-	uint		   _fbo, _drb;
-	Texture		   _texture;
+	SDL_Window     * _handle;
+	int _id;
+	uint _fbo, _drb;
+	Texture _texture;
 	RectangleShape _displayPlane;
-	bool		   _direct = false;
-	mat4		   _postMatrix;
+	bool _direct = false;
+	mat4 _postMatrix;
 
 public:
 	/// Static variable to a SDL GL Context.
@@ -32,7 +32,11 @@ public:
 	{
 		DerelictSDL2.load();
 		DerelictSDL2Image.load();
+		DerelictSDL2Mixer.load();
 		DerelictGL3.load();
+
+		SDL_Init(SDL_INIT_EVERYTHING);
+
 		_handle = SDL_CreateWindow(title.toStringz(), x, y, width, height, flags | SDL_WINDOW_OPENGL);
 		if (!valid)
 			throw new Exception("Couldn't create window!");
@@ -59,6 +63,8 @@ public:
 
 		ShaderProgram.load();
 		Texture.load();
+		if (!Music.load())
+			throw new Exception(Music.error);
 
 		create(width, height);
 
@@ -116,7 +122,7 @@ public:
 		glGenFramebuffers(1, &_fbo);
 		glBindFramebuffer(GL_FRAMEBUFFER, _fbo);
 
-		_texture		   = new Texture();
+		_texture = new Texture();
 		_texture.minFilter = TextureFilterMode.Nearest;
 		_texture.magFilter = TextureFilterMode.Nearest;
 		_texture.create(width, height, GL_RGB, null);

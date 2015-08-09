@@ -1,0 +1,7 @@
+{
+	"cmd": "dub",
+	"args": ["test", "--config=Demo"],
+	"name": "Test",
+	"sh": false,
+	"errorMatch": "^(?<file>.+?)\\((?<line>\\d+)\\): Error"
+}

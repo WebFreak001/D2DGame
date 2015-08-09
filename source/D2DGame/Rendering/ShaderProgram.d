@@ -140,6 +140,12 @@ class ShaderProgram : IVerifiable
 	}
 
 	///
+	public void opIndexAssign(T)(T value, string uniform)
+	{
+		set(uniform, value);
+	}
+
+	///
 	public uint id()
 	{
 		return program;

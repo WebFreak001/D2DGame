@@ -96,7 +96,7 @@ class Shader : IVerifiable
 		return _id > 0;
 	}
 
-	private uint   _id = 0;
+	private uint _id = 0;
 	private string content;
-	private bool   compiled = false;
+	private bool compiled = false;
 }

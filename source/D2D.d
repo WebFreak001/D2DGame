@@ -30,6 +30,7 @@ public
 {
 	import derelict.sdl2.sdl;
 	import derelict.sdl2.image;
+	import derelict.sdl2.mixer;
 	import derelict.sdl2.ttf;
 	import derelict.opengl3.gl3;
 
@@ -63,6 +64,9 @@ public
 	import D2DGame.Rendering.ShaderProgram;
 	import D2DGame.Rendering.Shape;
 	import D2DGame.Rendering.RectangleShape;
+
+	import D2DGame.Audio.Music;
+	import D2DGame.Audio.Sound;
 
 	import D2DGame.Toolkit.Game;
 
