@@ -13,6 +13,7 @@ private:
 	string _title = "Game";
 	int _fps = 60;
 	StopWatch _stopwatch;
+	WindowFlags _flags = WindowFlags.Default;
 
 protected:
 	@property ref int windowWidth()
@@ -38,6 +39,11 @@ protected:
 	@property ref int maxFPS()
 	{
 		return _fps;
+	}
+
+	@property ref WindowFlags flags()
+	{
+		return _flags;
 	}
 
 	@property Window window()
@@ -70,7 +76,7 @@ public:
 	{
 		init();
 
-		_window = new Window(_width, _height, _title);
+		_window = new Window(_width, _height, _title, _flags);
 
 		if (_icon is null)
 		{

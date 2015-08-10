@@ -43,9 +43,9 @@ class Shuriken : RectangleShape
 		matrixStack.pop();
 	}
 
-	@property bool isIn()
+	bool isIn(int width, int height)
 	{
-		return position.x > -80 && position.y > -80 && position.x < 1360 && position.y < 800;
+		return position.x > -80 && position.y > -80 && position.x < width + 80 && position.y < height + 80;
 	}
 }
 
@@ -68,6 +68,7 @@ public:
 		windowHeight = 720;
 		windowTitle = "Shuriken Simulator EXTREME SUPER ULTRA DELUXE EDITION OMEGA 2.WHOA";
 		maxFPS = 0;
+		flags |= WindowFlags.Resizable;
 	}
 
 	override void load()
@@ -98,11 +99,16 @@ public:
 
 	override void update(float delta)
 	{
+		int width = window.width;
+		int height = window.height;
 		for (int i = shuriken.length - 1; i >= 0; i--)
 		{
 			shuriken[i].update(delta);
-			if (!shuriken[i].isIn)
+			if (!shuriken[i].isIn(width, height))
+			{
+				shuriken[i].dispose();
 				shuriken = shuriken.remove!(o => o == shuriken[i])();
+			}
 		}
 	}
 
@@ -123,6 +129,10 @@ public:
 			clicked = false;
 			shuriken ~= new Shuriken(event.x, event.y, event.x - lastX, event.y - lastY, mouse.rotation);
 			whosh.play();
+			break;
+		case Event.Type.Resized:
+			window.resize(event.width, event.height);
+			std.stdio.writefln("New Size: %sx%s", event.width, event.height);
 			break;
 		default:
 			break;
@@ -150,6 +160,5 @@ public:
 
 void main()
 {
-	std.stdio.writeln("A");
 	new Game1().run();
 }

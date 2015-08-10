@@ -33,9 +33,9 @@ interface IRenderTarget
 	final void draw(Mesh mesh, ShaderProgram shader = null)
 	{
 		bind();
-
 		if (shader is null)
 			shader = ShaderProgram.defaultShader;
+
 		shader.bind();
 		shader.set("transform", matrixStack.top);
 		shader.set("projection", projectionStack.top);

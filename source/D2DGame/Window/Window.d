@@ -113,7 +113,10 @@ public:
 
 	void resize(int width, int height)
 	{
-		_texture.resize(width, height);
+		glDeleteFramebuffers(1, &_fbo);
+		_texture.dispose();
+		create(width, height);
+		_displayPlane.texture = _texture;
 		projectionStack.set(mat4.orthographic(0, width, height, 0, -1, 1));
 	}
 
@@ -150,7 +153,9 @@ public:
 	void display(ShaderProgram post = null)
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		glViewport(0, 0, width, height);
+		int x, y;
+		SDL_GetWindowSize(_handle, &x, &y);
+		glViewport(0, 0, x, y);
 		glClearColor(Color3.BlueViolet, 1);
 		glClear(GL_COLOR_BUFFER_BIT);
 		_direct = true;
@@ -338,6 +343,8 @@ public:
 	/// See_Also: Window.close
 	void dispose()
 	{
+		glDeleteFramebuffers(1, &_fbo);
+		_texture.dispose();
 		SDL_DestroyWindow(_handle);
 		_handle = null;
 	}

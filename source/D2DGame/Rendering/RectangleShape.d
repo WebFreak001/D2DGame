@@ -11,7 +11,7 @@ import D2D;
  * window.draw(rect);
  * ---
  */
-class RectangleShape : Shape
+class RectangleShape : Shape, IDisposable
 {
 protected:
 
@@ -21,6 +21,19 @@ public:
 	{
 		_mesh = new Mesh();
 		setSize(vec2(1, 1));
+	}
+
+	~this()
+	{
+		dispose();
+	}
+
+	override void dispose()
+	{
+		if (_mesh.valid)
+		{
+			_mesh.dispose();
+		}
 	}
 
 	/// Sets the new size and creates a new mesh after disposing the old mesh.
@@ -37,11 +50,14 @@ public:
 	/// Sets the current transformation matrix and draws this onto the target.
 	override void draw(IRenderTarget target, ShaderProgram shader = null)
 	{
-		matrixStack.push();
-		matrixStack.top = matrixStack.top * transform;
-		if (texture !is null)
-			texture.bind(0);
-		target.draw(_mesh, shader);
-		matrixStack.pop();
+		if (_mesh.valid)
+		{
+			matrixStack.push();
+			matrixStack.top = matrixStack.top * transform;
+			if (texture !is null)
+				texture.bind(0);
+			target.draw(_mesh, shader);
+			matrixStack.pop();
+		}
 	}
 }

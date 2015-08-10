@@ -63,24 +63,39 @@ struct WindowEvent
 		Quit
 	}
 
-	Type   type;
+	Type type;
 
-	/// x/width in events.
-	int	   x;
-	/// y/height in events.
-	int	   y;
+	union
+	{
+		int x; /// x position in events.
+		int width; /// width in events.
+	}
+
+	union
+	{
+		int y; /// y position in events.
+		int height; /// height in events.
+	}
 	/// Relative mouse coordinates in Mouse events.
-	int	   xrel, yrel;
-	/// Mouse button in Mouse events.
-	int	   mousebutton;
-	/// Key in Controller and Keyboard events.
-	int	   key;
-	/// Controller id in Controller* event.
-	int	   controllerID;
-	/// Axis id in ControllerAxis event.
-	int	   axis;
-	/// Axis value in ControllerAxis event.
-	short  axisValue;
+	int xrel, yrel;
+	union
+	{
+		/// Mouse button in Mouse events.
+		int mousebutton;
+		/// Key in Controller and Keyboard events.
+		int key;
+		/// Axis id in ControllerAxis event.
+		int axis;
+	}
+	/// Controller id in any Controller event.
+	int controllerID;
+	union
+	{
+		/// Axis value in ControllerAxis event.
+		short axisValue;
+		/// Non-zero if this is a key repeat.
+		ubyte repeat;
+	}
 	/// Text contained in TextEntered event.
 	string text;
 
@@ -100,13 +115,13 @@ struct WindowEvent
 				break;
 			case SDL_WINDOWEVENT_MOVED:
 				type = Type.Moved;
-				x	 = event.window.data1;
-				y	 = event.window.data2;
+				x = event.window.data1;
+				y = event.window.data2;
 				break;
 			case SDL_WINDOWEVENT_RESIZED:
 				type = Type.Resized;
-				x	 = event.window.data1;
-				y	 = event.window.data2;
+				x = event.window.data1;
+				y = event.window.data2;
 				break;
 			case SDL_WINDOWEVENT_MINIMIZED:
 				type = Type.Minimized;
@@ -139,54 +154,56 @@ struct WindowEvent
 			break;
 		case SDL_KEYDOWN:
 			type = Type.KeyPressed;
-			key	 = event.key.keysym.sym;
+			key = event.key.keysym.sym;
+			repeat = event.key.repeat;
 			break;
 		case SDL_KEYUP:
 			type = Type.KeyReleased;
-			key	 = event.key.keysym.sym;
+			key = event.key.keysym.sym;
+			repeat = event.key.repeat;
 			break;
 		case SDL_MOUSEWHEEL:
 			type = Type.MouseWheelMoved;
-			x	 = event.wheel.x;
-			y	 = event.wheel.y;
+			x = event.wheel.x;
+			y = event.wheel.y;
 			break;
 		case SDL_MOUSEMOTION:
 			type = Type.MouseMoved;
-			x	 = event.motion.x;
-			y	 = event.motion.y;
+			x = event.motion.x;
+			y = event.motion.y;
 			xrel = event.motion.xrel;
 			yrel = event.motion.yrel;
 			break;
 		case SDL_MOUSEBUTTONDOWN:
-			type		= Type.MouseButtonPressed;
-			x			= event.button.x;
-			y			= event.button.y;
+			type = Type.MouseButtonPressed;
+			x = event.button.x;
+			y = event.button.y;
 			mousebutton = event.button.button;
 			break;
 		case SDL_MOUSEBUTTONUP:
-			type		= Type.MouseButtonReleased;
-			x			= event.button.x;
-			y			= event.button.y;
+			type = Type.MouseButtonReleased;
+			x = event.button.x;
+			y = event.button.y;
 			mousebutton = event.button.button;
 			break;
 		case SDL_CONTROLLERDEVICEADDED:
-			type		 = Type.ControllerConnected;
+			type = Type.ControllerConnected;
 			controllerID = event.cdevice.which;
 			SDL_GameControllerOpen(controllerID);
 			break;
 		case SDL_CONTROLLERDEVICEREMOVED:
-			type		 = Type.ControllerDisconnected;
+			type = Type.ControllerDisconnected;
 			controllerID = event.cdevice.which;
 			break;
 		case SDL_CONTROLLERBUTTONDOWN:
-			type		 = Type.ControllerButtonPressed;
+			type = Type.ControllerButtonPressed;
 			controllerID = event.cbutton.which;
-			key			 = event.cbutton.button;
+			key = event.cbutton.button;
 			break;
 		case SDL_CONTROLLERBUTTONUP:
-			type		 = Type.ControllerButtonReleased;
+			type = Type.ControllerButtonReleased;
 			controllerID = event.cbutton.which;
-			key			 = event.cbutton.button;
+			key = event.cbutton.button;
 			break;
 		case SDL_CONTROLLERAXISMOTION:
 			type = Type.ControllerAxis;
@@ -205,7 +222,7 @@ struct WindowEvent
 			{
 				value = 0;
 			}
-			axis	  = event.caxis.axis;
+			axis = event.caxis.axis;
 			axisValue = value;
 			break;
 		case SDL_TEXTINPUT:
@@ -225,9 +242,9 @@ struct WindowEvent
 ///
 unittest
 {
-	SDL_Event	source;
+	SDL_Event source;
 	WindowEvent event;
-	source.type			  = SDL_KEYDOWN;
+	source.type = SDL_KEYDOWN;
 	source.key.keysym.sym = 42;
 	event.fromSDL(source);
 
