@@ -5,21 +5,21 @@ import D2D;
 /// Texture filter mode for min and mag filters.
 enum TextureFilterMode : int
 {
-	Linear				 = GL_LINEAR,                 /// `GL_LINEAR` sampling. Smooth looking textures.
-	Nearest				 = GL_NEAREST,                /// `GL_NEAREST` sampling. No smoothing.
+	Linear               = GL_LINEAR,                 /// `GL_LINEAR` sampling. Smooth looking textures.
+	Nearest              = GL_NEAREST,                /// `GL_NEAREST` sampling. No smoothing.
 	NearestMipmapNearest = GL_NEAREST_MIPMAP_NEAREST, /// `GL_NEAREST_MIPMAP_NEAREST` sampling. Not usable in mag filter.
-	LinearMipmapNearest	 = GL_LINEAR_MIPMAP_NEAREST,  /// `GL_LINEAR_MIPMAP_NEAREST` sampling. Not usable in mag filter.
-	NearestMipmapLinear	 = GL_NEAREST_MIPMAP_LINEAR,  /// `GL_NEAREST_MIPMAP_LINEAR` sampling. Not usable in mag filter.
-	LinearMipmapLinear	 = GL_LINEAR_MIPMAP_LINEAR,   /// `GL_LINEAR_MIPMAP_LINEAR` sampling. Not usable in mag filter.
+	LinearMipmapNearest  = GL_LINEAR_MIPMAP_NEAREST,  /// `GL_LINEAR_MIPMAP_NEAREST` sampling. Not usable in mag filter.
+	NearestMipmapLinear  = GL_NEAREST_MIPMAP_LINEAR,  /// `GL_NEAREST_MIPMAP_LINEAR` sampling. Not usable in mag filter.
+	LinearMipmapLinear   = GL_LINEAR_MIPMAP_LINEAR,   /// `GL_LINEAR_MIPMAP_LINEAR` sampling. Not usable in mag filter.
 }
 
 /// Texture clamp mode for wrap x, wrap y, wrap z.
 enum TextureClampMode : int
 {
 	ClampToBorder = GL_CLAMP_TO_BORDER, /// Clamps the texture coordinate at the border. Will include a border.
-	ClampToEdge	  = GL_CLAMP_TO_EDGE,   /// Clamps the texture coordinate at the edge of the texture.
-	Repeat		  = GL_REPEAT,          /// Repeats the texture coordinate when being larger than 1.
-	Mirror		  = GL_MIRRORED_REPEAT  /// Repeats the texture coordinate and mirrors every time for better tiling.
+	ClampToEdge   = GL_CLAMP_TO_EDGE,   /// Clamps the texture coordinate at the edge of the texture.
+	Repeat        = GL_REPEAT,          /// Repeats the texture coordinate when being larger than 1.
+	Mirror        = GL_MIRRORED_REPEAT  /// Repeats the texture coordinate and mirrors every time for better tiling.
 }
 
 /// Texture for drawing using OpenGL.
@@ -44,9 +44,9 @@ class Texture : IDisposable, IVerifiable
 	/// Needs to call Texture.applyParameters when called after creation.
 	public TextureClampMode wrapY = TextureClampMode.Repeat;
 
-	private int				inMode, mode;
-	private uint			_id;
-	private uint			_width, _height;
+	private int inMode, mode;
+	private uint _id;
+	private uint _width, _height;
 
 	/// OpenGL id of this texture.
 	/// id == 0 when not created.
@@ -91,8 +91,8 @@ class Texture : IDisposable, IVerifiable
 	{
 		if (min == TextureFilterMode.LinearMipmapLinear || min == TextureFilterMode.LinearMipmapNearest)
 			enableMipMaps = true;
-		minFilter  = min;
-		magFilter  = mag;
+		minFilter = min;
+		magFilter = mag;
 		this.wrapX = wrapX;
 		this.wrapY = wrapY;
 		fromBitmap(Bitmap.load(file));
@@ -109,6 +109,12 @@ class Texture : IDisposable, IVerifiable
 		create(width, height, GL_RGBA, pixels);
 	}
 
+	/// Recreates a width x height texture containing the pixel data in RGBA ubyte format without disposing the old one.
+	public void recreate(uint width, uint height, void[] pixels)
+	{
+		recreate(width, height, GL_RGBA, pixels);
+	}
+
 	/// Creates a width x height texture containing the pixel data using ubytes.
 	public void create(uint width, uint height, int mode, void[] pixels)
 	{
@@ -120,9 +126,26 @@ class Texture : IDisposable, IVerifiable
 		applyParameters();
 
 		this.inMode = mode;
-		this.mode	= mode;
-		_width		= width;
-		_height		= height;
+		this.mode = mode;
+		_width = width;
+		_height = height;
+
+		if (!valid)
+			throw new Exception("OpenGL ErrorCode " ~ to!string(glGetError()));
+	}
+
+	/// Recreates a width x height texture containing the pixel data using ubytes without disposing the old one.
+	public void recreate(uint width, uint height, int mode, void[] pixels)
+	{
+		bind(0);
+		glTexImage2D(GL_TEXTURE_2D, 0, mode, width, height, 0, mode, GL_UNSIGNED_BYTE, pixels.ptr);
+
+		applyParameters();
+
+		this.inMode = mode;
+		this.mode = mode;
+		_width = width;
+		_height = height;
 
 		if (!valid)
 			throw new Exception("OpenGL ErrorCode " ~ to!string(glGetError()));
@@ -139,9 +162,26 @@ class Texture : IDisposable, IVerifiable
 		applyParameters();
 
 		this.inMode = inMode;
-		this.mode	= mode;
-		_width		= width;
-		_height		= height;
+		this.mode = mode;
+		_width = width;
+		_height = height;
+
+		if (!valid)
+			throw new Exception("OpenGL ErrorCode " ~ to!string(glGetError()));
+	}
+
+	/// Recreates a width x height texture containing the pixel data in `inMode` format using `type` as array type and internally convertes to `mode` without disposing the old one.
+	public void recreate(uint width, uint height, int inMode, int mode, void[] pixels, int type = GL_UNSIGNED_BYTE)
+	{
+		bind(0);
+		glTexImage2D(GL_TEXTURE_2D, 0, inMode, width, height, 0, mode, type, pixels.ptr);
+
+		applyParameters();
+
+		this.inMode = inMode;
+		this.mode = mode;
+		_width = width;
+		_height = height;
 
 		if (!valid)
 			throw new Exception("OpenGL ErrorCode " ~ to!string(glGetError()));
@@ -189,12 +229,28 @@ class Texture : IDisposable, IVerifiable
 		create(bitmap.width, bitmap.height, mode, bitmap.surface.pixels[0 .. bitmap.width * bitmap.height * bitmap.surface.format.BytesPerPixel]);
 	}
 
+	/// Creates the texture from a bitmap without disposing the old one.
+	public void recreateFromBitmap(Bitmap bitmap, string name = "Bitmap")
+	{
+		if (!bitmap.valid)
+			throw new Exception(name ~ " is invalid!");
+
+		int mode = GL_RGB;
+
+		if (bitmap.surface.format.BytesPerPixel == 4)
+		{
+			mode = GL_RGBA;
+		}
+
+		recreate(bitmap.width, bitmap.height, mode, bitmap.surface.pixels[0 .. bitmap.width * bitmap.height * bitmap.surface.format.BytesPerPixel]);
+	}
+
 	/// Resizes the texture containing the new data.
 	public void resize(uint width, uint height, void[] pixels = null)
 	{
 		bind(0);
 		glTexImage2D(GL_TEXTURE_2D, 0, inMode, width, height, 0, mode, GL_UNSIGNED_BYTE, pixels.ptr);
-		_width	= width;
+		_width = width;
 		_height = height;
 	}
 

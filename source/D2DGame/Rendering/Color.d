@@ -333,17 +333,17 @@ struct Color
 		{
 			double m;
 			double sv;
-			int	   sextant;
+			int sextant;
 			double fract, vsf, mid1, mid2;
 
-			m		= lightness + lightness - v;
-			sv		= (v - m) / v;
-			hue	   *= 6.0;
+			m = lightness + lightness - v;
+			sv = (v - m) / v;
+			hue *= 6.0;
 			sextant = cast(int) hue;
-			fract	= hue - sextant;
-			vsf		= v * sv * fract;
-			mid1	= m + vsf;
-			mid2	= v - vsf;
+			fract = hue - sextant;
+			vsf = v * sv * fract;
+			mid1 = m + vsf;
+			mid2 = v - vsf;
 			switch (sextant)
 			{
 			case 0:
@@ -391,7 +391,7 @@ struct Color
 	}
 
 	/// Creates an SDL_Color from `this`.
-	public @property SDL_Color sdl_color()
+	public @property SDL_Color sdl_color() const
 	{
 		return SDL_Color(_r, _g, _b, 255);
 	}
@@ -415,37 +415,37 @@ struct Color
 	}
 
 	/// Red value in range 0 - 1 as a float.
-	public @property float fR()
+	public @property float fR() const
 	{
 		return _r * 0.00392156862f;
 	}
 
 	/// Green value in range 0 - 1 as a float.
-	public @property float fG()
+	public @property float fG() const
 	{
 		return _g * 0.00392156862f;
 	}
 
 	/// Blue value in range 0 - 1 as a float.
-	public @property float fB()
+	public @property float fB() const
 	{
 		return _b * 0.00392156862f;
 	}
 
 	/// RGB in range 0 - 1 as vec3
-	public @property vec3 f()
+	public @property vec3 f() const
 	{
 		return vec3(fR, fG, fB);
 	}
 
 	/// Color as RGB hex.
-	public @property int RGB()
+	public @property int RGB() const
 	{
 		return _r << 16 | _g << 8 | _b;
 	}
 
 	/// Color as BGR hex.
-	public @property int BGR()
+	public @property int BGR() const
 	{
 		return _r | _g << 8 | _b << 16;
 	}

@@ -15,8 +15,8 @@ class RenderableMesh
 	/// Constructor for creating a new RenderableMesh with existing data.
 	public this(uint bufferID, uint * vbos, uint indexLength)
 	{
-		this.bufferID	 = bufferID;
-		this.vbos		 = vbos;
+		this.bufferID = bufferID;
+		this.vbos = vbos;
 		this.indexLength = indexLength;
 	}
 }
@@ -132,8 +132,8 @@ class Mesh : IDisposable, IVerifiable
 	/// Renderable mesh when create got called. Before its `null`.
 	public RenderableMesh renderable = null;
 
-	private vec3[]		  _vertices;
-	private vec3[]		  _normals;
-	private vec2[]		  _texCoords;
-	private uint[]		  _indices;
+	private vec3[]        _vertices;
+	private vec3[]        _normals;
+	private vec2[]        _texCoords;
+	private uint[]        _indices;
 }

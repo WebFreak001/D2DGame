@@ -6,7 +6,7 @@ import D2D;
 class Window : IVerifiable, IDisposable, IRenderTarget
 {
 private:
-	SDL_Window     * _handle;
+	SDL_Window* _handle;
 	int _id;
 	uint _fbo, _drb;
 	Texture _texture;
@@ -33,9 +33,15 @@ public:
 		DerelictSDL2.load();
 		DerelictSDL2Image.load();
 		DerelictSDL2Mixer.load();
+		DerelictSDL2ttf.load();
 		DerelictGL3.load();
 
 		SDL_Init(SDL_INIT_EVERYTHING);
+
+		if (TTF_Init() == -1)
+		{
+			std.stdio.writeln("Error Initializing SDL_TTF: ", TTF_GetError());
+		}
 
 		_handle = SDL_CreateWindow(title.toStringz(), x, y, width, height, flags | SDL_WINDOW_OPENGL);
 		if (!valid)
@@ -345,8 +351,11 @@ public:
 	{
 		glDeleteFramebuffers(1, &_fbo);
 		_texture.dispose();
-		SDL_DestroyWindow(_handle);
-		_handle = null;
+		if (valid)
+		{
+			SDL_DestroyWindow(_handle);
+			_handle = null;
+		}
 	}
 
 	/// Closes the window and invalidates it.

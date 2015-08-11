@@ -6,32 +6,32 @@ import D2D;
 class Transformable
 {
 private:
-	mat4  _transform   = mat4.identity;
-	vec2  _origin	   = vec2(0);
-	vec2  _position	   = vec2(0);
-	vec2  _scale	   = vec2(1);
-	float _rotation	   = 0;
-	bool  _needsChange = true;
+	mat4 _transform = mat4.identity;
+	vec2 _origin = vec2(0);
+	vec2 _position = vec2(0);
+	vec2 _scale = vec2(1);
+	float _rotation = 0;
+	bool _needsChange = true;
 public:
  @nogc:
 	/// Rotates this around origin with the specified amount relatively.
 	void rotate(float amount)
 	{
-		_rotation	+= amount;
+		_rotation += amount;
 		_needsChange = true;
 	}
 
 	/// Scales this around origin with the specified amount relatively.
 	void scale(vec2 amount)
 	{
-		_scale		+= amount;
+		_scale += amount;
 		_needsChange = true;
 	}
 
 	/// Moves this with the specified amount relatively.
 	void move(vec2 amount)
 	{
-		_position	+= amount;
+		_position += amount;
 		_needsChange = true;
 	}
 
@@ -42,7 +42,7 @@ public:
 		if (_needsChange)
 		{
 			_transform = mat4.scaling(_scale.x, _scale.y, 1) * mat4.translation(_position.x, _position.y, 0)
-						 * mat4.zrotation(_rotation) * mat4.translation(-_origin.x, -_origin.y, 0);
+			             * mat4.zrotation(_rotation) * mat4.translation(-_origin.x, -_origin.y, 0);
 
 			assert(_transform.isFinite);
 		}
@@ -53,7 +53,7 @@ public:
 	/// Sets the position of this transform.
 	void position(vec2 position)
 	{
-		_position	 = position;
+		_position = position;
 		_needsChange = true;
 	}
 
@@ -66,7 +66,7 @@ public:
 	/// Sets the origin position of this transform.
 	void origin(vec2 origin)
 	{
-		_origin		 = origin;
+		_origin = origin;
 		_needsChange = true;
 	}
 
@@ -79,7 +79,7 @@ public:
 	/// Sets the scaling of this transform.
 	void scaling(vec2 scale)
 	{
-		_scale		 = scale;
+		_scale = scale;
 		_needsChange = true;
 	}
 
@@ -92,7 +92,7 @@ public:
 	/// Sets the rotation of this transform.
 	void rotation(float rotation)
 	{
-		_rotation	 = rotation;
+		_rotation = rotation;
 		_needsChange = true;
 	}
 

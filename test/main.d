@@ -60,6 +60,8 @@ private:
 	ShaderProgram shader;
 	Texture normal;
 	Sound whosh;
+	TTFFont font;
+	IText text;
 
 public:
 	override void init()
@@ -80,6 +82,12 @@ public:
 
 		shurikenTex = new Texture("res/tex/shuriken-color.png", TextureFilterMode.LinearMipmapLinear, TextureFilterMode.Linear, TextureClampMode.ClampToEdge, TextureClampMode.ClampToEdge);
 		mouse = new Shuriken(0, 0, 0, 0, 0);
+
+		font = new TTFFont();
+		font.load("res/font/Roboto.ttf", 32);
+
+		text = font.render("Shuriken Simulator EXTERME SUPER ULTRA DELUXE EDITION OMEGA 2.WHOA");
+		text.size = 0.5f;
 
 		shader = new ShaderProgram();
 		shader.attach(Shader.create(ShaderType.Vertex, import ("default.vert")));
@@ -155,6 +163,8 @@ public:
 			normal.bind(1);
 			window.draw(mouse, shader);
 		}
+
+		window.draw(text);
 	}
 }
 

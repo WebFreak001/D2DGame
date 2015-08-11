@@ -11,11 +11,11 @@ import D2D;
  * window.draw(rect);
  * ---
  */
-class RectangleShape : Shape, IDisposable
+class RectangleShape : Shape, IDisposable, IVerifiable
 {
 protected:
-
 	Mesh _mesh; // TODO: Only 1 Mesh
+
 public:
 	this()
 	{
@@ -26,6 +26,11 @@ public:
 	~this()
 	{
 		dispose();
+	}
+
+	override @property bool valid()
+	{
+		return _mesh.valid;
 	}
 
 	override void dispose()

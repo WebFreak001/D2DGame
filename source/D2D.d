@@ -68,6 +68,11 @@ public
 	import D2DGame.Audio.Music;
 	import D2DGame.Audio.Sound;
 
+	import D2DGame.Font.IFont;
+	import D2DGame.Font.IText;
+	import D2DGame.Font.TTFFont;
+	import D2DGame.Font.TTFText;
+
 	import D2DGame.Toolkit.Game;
 
 	import std.string;

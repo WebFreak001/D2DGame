@@ -20,18 +20,18 @@ import std.datetime;
 class FPSLimiter
 {
 protected:
-	int	 _fps	 = 0;
-	int	 _skipms = 0;
-	long _next	 = 0;
-	long _sleep	 = 0;
+	int _fps = 0;
+	int _skipms = 0;
+	long _next = 0;
+	long _sleep = 0;
 
 public:
 	/// Creates a new FPS Limiter instance with specified max FPS.
 	this(int maxFPS)
 	{
-		_fps	= maxFPS;
+		_fps = maxFPS;
 		_skipms = 1000 / _fps;
-		_next	= Clock.currAppTick().to!("msecs", long);
+		_next = Clock.currAppTick().to!("msecs", long);
 	}
 
 	/// Calculates how long to wait and then waits that amount of time to ensure the target FPS.
