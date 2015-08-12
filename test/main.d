@@ -1,4 +1,4 @@
-import D2D;
+import d2d;
 
 import std.algorithm;
 
@@ -64,7 +64,7 @@ private:
 	IText text;
 
 public:
-	override void init()
+	override void start()
 	{
 		windowWidth = 1280;
 		windowHeight = 720;
