@@ -21,13 +21,13 @@ public:
 	}
 
 	/// Gets the scale in percent.
-	override @property float size()
+	override @property float scale()
 	{
 		return _scale;
 	}
 
 	/// Sets the scale in percent.
-	override @property void size(float value)
+	override @property void scale(float value)
 	{
 		_scale = value;
 	}
@@ -87,7 +87,8 @@ public:
 		if (!bmp.valid)
 			throw new Exception(cast(string) TTF_GetError().fromStringz());
 		texture.recreateFromBitmap(bmp, "Blended Text: \"" ~ text ~ "\"");
-		setSize(vec2(texture.width, texture.height));
+		size = vec2(texture.width, texture.height);
+		create();
 	}
 
 	override void draw(IRenderTarget target, ShaderProgram shader = null)

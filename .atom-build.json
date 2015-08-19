@@ -1,7 +1,41 @@
 {
 	"cmd": "dub",
-	"args": ["test", "--config=Demo"],
-	"name": "Test",
+	"args": [
+		"build"
+	],
+	"name": "Build Default",
 	"sh": false,
-	"errorMatch": "^(?<file>.+?)\\((?<line>\\d+)\\): Error"
+	"targets": {
+		"Run Default": {
+			"cmd": "dub",
+			"sh": false,
+			"args": [
+				"run"
+			]
+		},
+		"Build lib": {
+			"cmd": "dub",
+			"sh": false,
+			"args": [
+				"build",
+				"--config=lib"
+			]
+		},
+		"Build Demo": {
+			"cmd": "dub",
+			"sh": false,
+			"args": [
+				"build",
+				"--config=Demo"
+			]
+		},
+		"Run Demo": {
+			"cmd": "dub",
+			"sh": false,
+			"args": [
+				"run",
+				"--config=Demo"
+			]
+		}
+	}
 }

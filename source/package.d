@@ -44,6 +44,7 @@ public
 
 	import std.math;
 
+	import d2d.core.bytestream;
 	import d2d.core.iverifiable;
 	import d2d.core.idisposable;
 	import d2d.core.transformable;

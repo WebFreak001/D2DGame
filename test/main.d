@@ -22,7 +22,8 @@ class Shuriken : RectangleShape
 		this.rotation = rotation;
 		rotaSpeed = 0.1f * max(0.1f, offs.length * 0.05f);
 		position = vec2(x, y);
-		setSize(vec2(128, 128));
+		size = vec2(128, 128);
+		create();
 	}
 
 	void update(float delta)
@@ -52,7 +53,7 @@ class Shuriken : RectangleShape
 class Game1 : Game
 {
 private:
-	Shuriken[]    shuriken;
+	Shuriken[] shuriken;
 	Shuriken mouse;
 	int lastX, lastY;
 	int currentX, currentY;
@@ -60,8 +61,7 @@ private:
 	ShaderProgram shader;
 	Texture normal;
 	Sound whosh;
-	TTFFont font;
-	IText text;
+	Music music;
 
 public:
 	override void start()
@@ -75,19 +75,13 @@ public:
 
 	override void load()
 	{
-		Music music = new Music("song.mp3");
+		music = new Music("res/audio/song.mp3");
 		music.play(0);
 
-		whosh = new Sound("whoosh.wav");
+		whosh = new Sound("res/audio/whoosh.wav");
 
 		shurikenTex = new Texture("res/tex/shuriken-color.png", TextureFilterMode.LinearMipmapLinear, TextureFilterMode.Linear, TextureClampMode.ClampToEdge, TextureClampMode.ClampToEdge);
 		mouse = new Shuriken(0, 0, 0, 0, 0);
-
-		font = new TTFFont();
-		font.load("res/font/Roboto.ttf", 32);
-
-		text = font.render("Shuriken Simulator EXTERME SUPER ULTRA DELUXE EDITION OMEGA 2.WHOA");
-		text.size = 0.5f;
 
 		shader = new ShaderProgram();
 		shader.attach(Shader.create(ShaderType.Vertex, import ("default.vert")));
@@ -163,8 +157,6 @@ public:
 			normal.bind(1);
 			window.draw(mouse, shader);
 		}
-
-		window.draw(text);
 	}
 }
 

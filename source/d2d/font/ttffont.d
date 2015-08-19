@@ -49,7 +49,7 @@ public:
 	{
 		TTFText ret = new TTFText(this);
 		ret.text = text;
-		ret.size = scale;
+		ret.scale = scale;
 		return ret;
 	}
 
@@ -58,7 +58,7 @@ public:
 	{
 		TTFText ret = new TTFText(this);
 		ret.text = text;
-		ret.size = scale;
+		ret.scale = scale;
 		ret.multiline = true;
 		return ret;
 	}

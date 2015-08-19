@@ -7,3 +7,4 @@ bin/
 lib/
 
 docs/
+dub.selections.json

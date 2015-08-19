@@ -53,6 +53,7 @@ class Sound : IVerifiable, IDisposable
 	{
 		if (valid)
 		{
+			stop();
 			Mix_FreeChunk(_handle);
 			_handle = null;
 		}

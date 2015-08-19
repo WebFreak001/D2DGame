@@ -94,6 +94,7 @@ class Music : IVerifiable, IDisposable
 	{
 		if (valid)
 		{
+			stop();
 			Mix_FreeMusic(_handle);
 			_handle = null;
 		}

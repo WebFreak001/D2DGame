@@ -6,9 +6,9 @@ import d2d;
 interface IText : IDrawable, IDisposable, IVerifiable
 {
 	/// Gets the scale in percent.
-	@property float size();
+	@property float scale();
 	/// Sets the scale in percent.
-	@property void size(float value);
+	@property void scale(float value);
 
 	/// Gets the text.
 	@property string text();

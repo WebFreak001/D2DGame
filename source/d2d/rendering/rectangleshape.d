@@ -7,7 +7,13 @@ import d2d;
  * Examples:
  * ---
  * auto rect = new RectangleShape();
- * rect.setSize(vec2(100, 50)); // 100x50 px
+ * rect.size = vec2(100, 50); // 100x50 px
+ * rect.create();
+ * window.draw(rect);
+ *
+ * // OR
+ *
+ * auto rect = RectangleShape.create(vec2(0, 0), vec2(100, 50)); // At 0,0 with size 100x50 px
  * window.draw(rect);
  * ---
  */
@@ -15,12 +21,15 @@ class RectangleShape : Shape, IDisposable, IVerifiable
 {
 protected:
 	Mesh _mesh; // TODO: Only 1 Mesh
+	vec4 _texCoords = vec4(0, 0, 1, 1);
+	vec2 _size = vec2(1, 1);
 
 public:
+	///
 	this()
 	{
 		_mesh = new Mesh();
-		setSize(vec2(1, 1));
+		create();
 	}
 
 	~this()
@@ -28,9 +37,22 @@ public:
 		dispose();
 	}
 
+	/// Returns if the mesh is valid.
 	override @property bool valid()
 	{
 		return _mesh.valid;
+	}
+
+	/// Property for the size of the rectangle.
+	@property ref vec2 size()
+	{
+		return _size;
+	}
+
+	/// Property for begin xy and end xy using a vec4 for texture coordinates.
+	@property ref vec4 texCoords()
+	{
+		return _texCoords;
 	}
 
 	override void dispose()
@@ -41,13 +63,13 @@ public:
 		}
 	}
 
-	/// Sets the new size and creates a new mesh after disposing the old mesh.
-	void setSize(const vec2 size)
+	/// Creates a new mesh after disposing the old mesh.
+	void create()
 	{
 		_mesh.dispose();
 		_mesh = new Mesh();
-		_mesh.addVertices([vec3(0, 0, 0), vec3(size.x, 0, 0), vec3(size.x, size.y, 0), vec3(0, size.y, 0)]);
-		_mesh.addTexCoords([vec2(0, 0), vec2(1, 0), vec2(1, 1), vec2(0, 1)]);
+		_mesh.addVertices([vec3(0, 0, 0), vec3(_size.x, 0, 0), vec3(_size.x, _size.y, 0), vec3(0, _size.y, 0)]);
+		_mesh.addTexCoords([vec2(_texCoords.x, _texCoords.y), vec2(_texCoords.z, _texCoords.y), vec2(_texCoords.z, _texCoords.w), vec2(_texCoords.x, _texCoords.w)]);
 		_mesh.addIndices([0, 1, 2, 0, 2, 3]);
 		_mesh.create();
 	}
@@ -64,5 +86,40 @@ public:
 			target.draw(_mesh, shader);
 			matrixStack.pop();
 		}
+		else
+			debug std.stdio.writeln("[DEBUG] Mesh not valid!");
+	}
+
+	///
+	static RectangleShape create(vec2 position, vec2 size)
+	{
+		auto shape = new RectangleShape();
+		shape.position = position;
+		shape.size = size;
+		shape.create();
+		return shape;
+	}
+
+	///
+	static RectangleShape create(Texture texture, vec2 position, vec2 size)
+	{
+		auto shape = new RectangleShape();
+		shape.texture = texture;
+		shape.position = position;
+		shape.size = size;
+		shape.create();
+		return shape;
+	}
+
+	///
+	static RectangleShape create(Texture texture, vec2 position, vec2 size, vec4 texCoords)
+	{
+		auto shape = new RectangleShape();
+		shape.texture = texture;
+		shape.position = position;
+		shape.size = size;
+		shape.texCoords = texCoords;
+		shape.create();
+		return shape;
 	}
 }

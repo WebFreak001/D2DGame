@@ -15,6 +15,7 @@ private:
 	int _fps = 60;
 	StopWatch _stopwatch;
 	WindowFlags _flags = WindowFlags.Default;
+	ShaderProgram _postShader = null;
 
 protected:
 	/// Window start width, will not update afterwards
@@ -57,6 +58,12 @@ protected:
 	@property Window window()
 	{
 		return _window;
+	}
+
+	/// Optional post processing shader.
+	@property ref ShaderProgram postShader()
+	{
+		return _postShader;
 	}
 
 	/// Start function will get called before window is created. Variables can be changed here.
@@ -130,7 +137,10 @@ public:
 
 			draw();
 
-			_window.display();
+			if (_postShader !is null)
+				_window.display(_postShader);
+			else
+				_window.display();
 
 			if (limiter !is null)
 				limiter.wait();

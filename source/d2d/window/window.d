@@ -75,7 +75,8 @@ public:
 		create(width, height);
 
 		_displayPlane = new RectangleShape();
-		_displayPlane.setSize(vec2(1, 1));
+		_displayPlane.size = vec2(1, 1);
+		_displayPlane.create();
 		_displayPlane.texture = _texture;
 
 		_postMatrix = mat4.orthographic(0, 1, 0, 1, -1, 1);
