@@ -109,8 +109,8 @@ class Music : IVerifiable, IDisposable
 
 	/// Starts this music by fading in over `ms` milliseconds, will stop other musics. -1 loops will play forever.
 	/// Params:
-	///     ms: Milliseconds for the fade-in effect to complete.
-	///     loops: -1 loops will play forever. 0 plays the music zero times.
+	///     ms = Milliseconds for the fade-in effect to complete.
+	///     loops = -1 loops will play forever. 0 plays the music zero times.
 	/// Returns: true on success, or false on errors
 	public bool fadeIn(int ms, int loops = 1)
 	{
@@ -119,9 +119,9 @@ class Music : IVerifiable, IDisposable
 
 	/// Starts this music by fading in over `ms` milliseconds, will stop other musics.
 	/// Params:
-	///     ms: Milliseconds for the fade-in effect to complete.
-	///     loops: -1 loops will play forever. 0 plays the music zero times.
-	///     position: Set the position of the currently playing music. The position takes different meanings for different music sources. It only works on the music sources listed below.
+	///     ms = Milliseconds for the fade-in effect to complete.
+	///     loops = -1 loops will play forever. 0 plays the music zero times.
+	///     position = Set the position of the currently playing music. The position takes different meanings for different music sources. It only works on the music sources listed below.
 	///         <b>MOD</b>
 	///             The double is cast to Uint16 and used for a pattern number in the module. Passing zero is similar to rewinding the song.
 	///         <b>OGG/MP3</b>
@@ -140,9 +140,7 @@ class Music : IVerifiable, IDisposable
 
 	/// Modifies the position where currently playing.
 	/// Params:
-	///     ms: Milliseconds for the fade-in effect to complete.
-	///     loops: -1 loops will play forever. 0 plays the music zero times.
-	///     position: Set the position of the currently playing music. The position takes different meanings for different music sources. It only works on the music sources listed below. Will automatically rewind before setting.
+	///     value = Set the position of the currently playing music. The position takes different meanings for different music sources. It only works on the music sources listed below. Will automatically rewind before setting.
 	///         <b>MOD</b>
 	///             The double is cast to Uint16 and used for a pattern number in the module. Passing zero is similar to rewinding the song.
 	///         <b>OGG/MP3</b>

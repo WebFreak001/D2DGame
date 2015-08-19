@@ -4,6 +4,7 @@
 	"copyright": "Copyright © 2015, WebFreak001",
 	"authors": ["WebFreak001"],
 	"license": "GPL-2.0",
+	"dflags": ["-XfdocFolder/index.json"],
 	"configurations": [
 	{
 		"name": "lib",

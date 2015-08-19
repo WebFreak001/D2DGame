@@ -61,9 +61,9 @@ class Sound : IVerifiable, IDisposable
 
 	/// Plays this sound in the selected channel.
 	/// Params:
-	///     loops: -1 loops will play forever. 0 plays once.
-	///     channel: -1 loops will choose the first free unreserved channel.
-	///     maxTicks: Maximum milliseconds to play this sound. If not enough loops or the sample chunk is not long enough, then the sample may stop before this timeout occurs. -1 means play forever.
+	///     loops = -1 loops will play forever. 0 plays once.
+	///     channel = -1 loops will choose the first free unreserved channel.
+	///     maxTicks = Maximum milliseconds to play this sound. If not enough loops or the sample chunk is not long enough, then the sample may stop before this timeout occurs. -1 means play forever.
 	/// Returns: the channel the sample is played on. On any errors, -1 is returned.
 	public int play(int loops = 0, int channel = -1, int maxTicks = -1)
 	{
@@ -72,10 +72,10 @@ class Sound : IVerifiable, IDisposable
 
 	/// Plays this sound in the selected channel with a fade in effect.
 	/// Params:
-	///     ms: Milliseconds for the fade-in effect to complete.
-	///     loops: -1 loops will play forever. 0 plays once.
-	///     channel: -1 loops will choose the first free unreserved channel.
-	///     maxTicks: Maximum milliseconds to play this sound. If not enough loops or the sample chunk is not long enough, then the sample may stop before this timeout occurs. -1 means play forever.
+	///     ms = Milliseconds for the fade-in effect to complete.
+	///     loops = -1 loops will play forever. 0 plays once.
+	///     channel = -1 loops will choose the first free unreserved channel.
+	///     maxTicks = Maximum milliseconds to play this sound. If not enough loops or the sample chunk is not long enough, then the sample may stop before this timeout occurs. -1 means play forever.
 	/// Returns: the channel the sample is played on. On any errors, -1 is returned.
 	public int fadeIn(int ms, int loops = 1, int channel = -1, int maxTicks = -1)
 	{
@@ -84,7 +84,7 @@ class Sound : IVerifiable, IDisposable
 
 	/// Halt playback of sound. This interrupts sound fader effects.
 	/// Params:
-	///     channel: Channel to stop playing, or -1 for all channels.
+	///     channel = Channel to stop playing, or -1 for all channels.
 	public static void stop(int channel = -1)
 	{
 		Mix_HaltChannel(channel);
@@ -92,7 +92,7 @@ class Sound : IVerifiable, IDisposable
 
 	/// Pause the sound playback. You may halt paused sounds.
 	/// Params:
-	///     channel: Channel to stop playing, or -1 for all channels.
+	///     channel = Channel to stop playing, or -1 for all channels.
 	/// Note: Sound can only be paused if it is actively playing.
 	public static void pause(int channel = -1)
 	{
@@ -101,7 +101,7 @@ class Sound : IVerifiable, IDisposable
 
 	/// Unpause the sound. This is safe to use on halted, paused, and already playing sounds.
 	/// Params:
-	///     channel: Channel to stop playing, or -1 for all channels.
+	///     channel = Channel to stop playing, or -1 for all channels.
 	public static void resume(int channel = -1)
 	{
 		Mix_Resume(channel);
@@ -109,7 +109,7 @@ class Sound : IVerifiable, IDisposable
 
 	/// Returns the current volume as float in range 0.0 to 1.0
 	/// Params:
-	///     channel: -1 for all channels.
+	///     channel = -1 for all channels.
 	public static float getVolume(int channel = -1)
 	{
 		return Mix_Volume(channel, -1) * INV_MIX_MAX_VOLUME;
@@ -117,7 +117,8 @@ class Sound : IVerifiable, IDisposable
 
 	/// Sets the current volume as float in range 0.0 to 1.0
 	/// Params:
-	///     channel: -1 for all channels.
+	///     value = volume between 0.0 and 1.0.
+	///     channel = -1 for all channels.
 	public static void setVolume(float value, int channel = -1)
 	{
 		Mix_Volume(channel, cast(int) (value * MIX_MAX_VOLUME));
@@ -125,7 +126,7 @@ class Sound : IVerifiable, IDisposable
 
 	/// Tells you how many channels are playing if set to -1
 	/// Params:
-	///     channel: -1 for all channels.
+	///     channel = -1 for all channels.
 	public static @property int isPlaying(int channel = -1)
 	{
 		return Mix_Playing(channel);
@@ -133,7 +134,7 @@ class Sound : IVerifiable, IDisposable
 
 	/// Tells you how many channels are paused if set to -1
 	/// Params:
-	///     channel: -1 for all channels.
+	///     channel = -1 for all channels.
 	public static @property int isPaused(int channel = -1)
 	{
 		return Mix_Paused(channel);
@@ -141,7 +142,7 @@ class Sound : IVerifiable, IDisposable
 
 	///
 	/// Params:
-	///     channel: -1 is invalid.
+	///     channel = -1 is invalid.
 	public static @property FadingStatus fadingStatus(int channel)
 	{
 		assert(channel != -1);
