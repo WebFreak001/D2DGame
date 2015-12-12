@@ -22,8 +22,8 @@
 	}],
 	"dependencies":
 	{
-		"derelict-sdl2": "~>1.9.4",
-		"derelict-gl3": "~>1.0.12",
-		"gl3n": "~>1.1.0"
+		"derelict-sdl2": "~>1.9.7",
+		"derelict-gl3": "~>1.0.17",
+		"gl3n": "~>1.2.0"
 	}
 }
