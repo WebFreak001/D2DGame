@@ -102,9 +102,9 @@ pure mat4 translate2d(mat4 mat, float x, float y)
 }
 
 /// Matrix stack for modelview (like glPopMatrix, glPushMatrix).
-MatrixStack!mat4 matrixStack;
+MatrixStack!mat4 matrixStack = gl3n.ext.matrixstack.matrixStack!mat4();
 /// Matrix stack for projection.
-MatrixStack!mat4 projectionStack;
+MatrixStack!mat4 projectionStack = gl3n.ext.matrixstack.matrixStack!mat4();
 
 /// Initializes matrix stacks
 static this()

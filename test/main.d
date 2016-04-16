@@ -103,13 +103,13 @@ public:
 	{
 		int width = window.width;
 		int height = window.height;
-		for (int i = shuriken.length - 1; i >= 0; i--)
+		foreach_reverse(i, shurik; shuriken)
 		{
-			shuriken[i].update(delta);
-			if (!shuriken[i].isIn(width, height))
+			shurik.update(delta);
+			if (!shurik.isIn(width, height))
 			{
-				shuriken[i].dispose();
-				shuriken = shuriken.remove!(o => o == shuriken[i])();
+				shurik.dispose();
+				shuriken = shuriken.remove(i);
 			}
 		}
 	}
@@ -145,10 +145,10 @@ public:
 	{
 		window.clear(Color3.SkyBlue);
 
-		for (int i = shuriken.length - 1; i >= 0; i--)
+		foreach_reverse(shurik; shuriken)
 		{
 			normal.bind(1);
-			window.draw(shuriken[i], shader);
+			window.draw(shurik, shader);
 		}
 
 		if (clicked)
