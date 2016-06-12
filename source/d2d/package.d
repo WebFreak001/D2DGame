@@ -77,7 +77,7 @@ public
 	import d2d.toolkit.game;
 
 	import std.string;
-	import std.typecons;
+	import std.typecons : AliasSeq;
 }
 
 /// 2D rotation on a mat4.

@@ -2,6 +2,8 @@ module d2d.rendering.shader;
 
 import d2d;
 
+import std.conv : to;
+
 /// All valid types of shaders for the `Shader` class.
 enum ShaderType : ubyte
 {
@@ -42,7 +44,7 @@ class Shader : IVerifiable
 			_id = glCreateShader(GL_FRAGMENT_SHADER);
 			break;
 		default:
-			throw new Exception("ShaderType " ~ to!string(type) ~ " is not defined!");
+			throw new Exception("ShaderType " ~ type.to!string ~ " is not defined!");
 		}
 
 		const int len = cast(const(int)) content.length;

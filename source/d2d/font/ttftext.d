@@ -2,6 +2,8 @@ module d2d.font.ttftext;
 
 import d2d;
 
+import std.algorithm : max;
+
 /// Implementation containing text drawable functions using a TTF font. Nice for static texts, slow for dynamic texts.
 class TTFText : RectangleShape, IText
 {

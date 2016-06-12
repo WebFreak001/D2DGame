@@ -21,8 +21,8 @@ class FPSLimiter
 {
 protected:
 	int _fps = 0;
-	int _skipms = 0;
-	long _next = 0;
+	int _skiphns = 0;
+	ulong _next = 0;
 	long _sleep = 0;
 
 public:
@@ -30,18 +30,18 @@ public:
 	this(int maxFPS)
 	{
 		_fps = maxFPS;
-		_skipms = 1000 / _fps;
-		_next = Clock.currAppTick().to!("msecs", long);
+		_skiphns = 10_000_000 / _fps;
+		_next = Clock.currStdTime();
 	}
 
 	/// Calculates how long to wait and then waits that amount of time to ensure the target FPS.
 	void wait()
 	{
-		_next += _skipms;
-		_sleep = _next - Clock.currAppTick().to!("msecs", long);
+		_next += _skiphns;
+		_sleep = _next - Clock.currStdTime();
 		if (_sleep > 0)
 		{
-			Thread.sleep(dur!("msecs")(_sleep));
+			Thread.sleep(dur!("hnsecs")(_sleep));
 		}
 	}
 }

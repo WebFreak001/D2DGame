@@ -77,17 +77,13 @@ public:
 	/// Sets the current transformation matrix and draws this onto the target.
 	override void draw(IRenderTarget target, ShaderProgram shader = null)
 	{
-		if (_mesh.valid)
-		{
-			matrixStack.push();
-			matrixStack.top = matrixStack.top * transform;
-			if (texture !is null)
-				texture.bind(0);
-			target.draw(_mesh, shader);
-			matrixStack.pop();
-		}
-		else
-			debug std.stdio.writeln("[DEBUG] Mesh not valid!");
+		assert(_mesh.valid, "Mesh not valid!");
+		matrixStack.push();
+		matrixStack.top = matrixStack.top * transform;
+		if (texture !is null)
+			texture.bind(0);
+		target.draw(_mesh, shader);
+		matrixStack.pop();
 	}
 
 	///

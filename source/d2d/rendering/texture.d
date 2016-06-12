@@ -2,6 +2,8 @@ module d2d.rendering.texture;
 
 import d2d;
 
+import std.conv : to;
+
 /// Texture filter mode for min and mag filters.
 enum TextureFilterMode : int
 {

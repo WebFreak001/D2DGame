@@ -138,7 +138,8 @@ class Color3
 	/// HTML Color: <span style='background-color: LightCyan;'>LightCyan</span>
 	alias LightCyan = AliasSeq!(0.8784313725490196, 1, 1);
 	/// HTML Color: <span style='background-color: LightGoldenRodYellow;'>LightGoldenRodYellow</span>
-	alias LightGoldenRodYellow = AliasSeq!(0.9803921568627451, 0.9803921568627451, 0.8235294117647058);
+	alias LightGoldenRodYellow = AliasSeq!(0.9803921568627451,
+			0.9803921568627451, 0.8235294117647058);
 	/// HTML Color: <span style='background-color: LightGray;'>LightGray</span>
 	alias LightGray = AliasSeq!(0.8274509803921568, 0.8274509803921568, 0.8274509803921568);
 	/// HTML Color: <span style='background-color: LightGreen;'>LightGreen</span>
@@ -300,7 +301,6 @@ unittest
 	}
 
 	assert(formatColor(Color3.White) == formatColor(1, 1, 1));
-
 
 	import std.stdio : writeln;
 

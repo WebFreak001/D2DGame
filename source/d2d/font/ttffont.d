@@ -2,6 +2,8 @@ module d2d.font.ttffont;
 
 import d2d;
 
+import std.algorithm : max;
+
 /// Implementation for SDL_ttf.
 class TTFFont : IFont
 {

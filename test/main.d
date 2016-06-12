@@ -134,7 +134,6 @@ public:
 			break;
 		case Event.Type.Resized:
 			window.resize(event.width, event.height);
-			std.stdio.writefln("New Size: %sx%s", event.width, event.height);
 			break;
 		default:
 			break;

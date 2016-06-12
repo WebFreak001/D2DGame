@@ -40,7 +40,7 @@ public:
 
 		if (TTF_Init() == -1)
 		{
-			std.stdio.writeln("Error Initializing SDL_TTF: ", TTF_GetError());
+			throw new Exception("Error Initializing SDL_TTF: " ~ TTF_GetError().fromStringz.idup);
 		}
 
 		_handle = SDL_CreateWindow(title.toStringz(), x, y, width, height, flags | SDL_WINDOW_OPENGL);
