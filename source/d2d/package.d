@@ -73,6 +73,8 @@ public
 	import d2d.font.itext;
 	import d2d.font.ttffont;
 	import d2d.font.ttftext;
+	import d2d.font.bmfont;
+	import d2d.font.bmtext;
 
 	import d2d.toolkit.game;
 

@@ -58,10 +58,13 @@ private:
 	int lastX, lastY;
 	int currentX, currentY;
 	bool clicked = false;
-	ShaderProgram shader;
+	int thrown = 0;
+	ShaderProgram shader, textShader;
 	Texture normal;
 	Sound whosh;
 	Music music;
+	IFont font;
+	IText text;
 
 public:
 	override void start()
@@ -96,7 +99,24 @@ public:
 		shader.set("tex", 0);
 		shader.set("tex2", 1);
 
+		textShader = new ShaderProgram();
+		textShader.attach(Shader.create(ShaderType.Vertex, import ("font.vert")));
+		textShader.attach(Shader.create(ShaderType.Fragment, import ("default.frag")));
+		textShader.link();
+		textShader.registerUniform("projection");
+		textShader.registerUniform("transform");
+		textShader.registerUniform("tex");
+		textShader.registerUniform("texRect");
+		textShader.registerUniform("sizeRect");
+
+		textShader.set("tex", 0);
+
 		normal = new Texture("res/tex/shuriken-normal.png", TextureFilterMode.LinearMipmapLinear, TextureFilterMode.Linear, TextureClampMode.ClampToEdge, TextureClampMode.ClampToEdge);
+
+		font = new BMFont("res/font/");
+		font.load("res/font/roboto.fnt", 0);
+
+		text = font.renderMultiline("Shuriken Simulator EXTREME SUPER ULTRA DELUXE EDITION OMEGA 2.WHOA\nThrown: " ~ thrown.to!string);
 	}
 
 	override void update(float delta)
@@ -131,6 +151,8 @@ public:
 			clicked = false;
 			shuriken ~= new Shuriken(event.x, event.y, event.x - lastX, event.y - lastY, mouse.rotation);
 			whosh.play();
+			thrown++;
+			text.text = "Shuriken Simulator EXTREME SUPER ULTRA DELUXE EDITION OMEGA 2.WHOA\nThrown: " ~ thrown.to!string;
 			break;
 		case Event.Type.Resized:
 			window.resize(event.width, event.height);
@@ -156,6 +178,8 @@ public:
 			normal.bind(1);
 			window.draw(mouse, shader);
 		}
+
+		window.draw(text, textShader);
 	}
 }
 
