@@ -2,6 +2,14 @@ module d2d.window.window;
 
 import d2d;
 
+enum DynLibs
+{
+	image = 1 << 0,
+	mixer = 1 << 1,
+	ttf = 1 << 2,
+	all = image | mixer | ttf
+}
+
 /// Single-Window class wrapping SDL_Window.
 class Window : IVerifiable, IDisposable, IRenderTarget
 {
@@ -19,26 +27,33 @@ public:
 	static SDL_GLContext glContext = null;
 
 	/// Creates a new centered window with specified title and flags on a 800x480 resolution.
-	this(string title = "D2DGame", uint flags = WindowFlags.Default) { this(800, 480, title, flags); }
+	this(string title = "D2DGame", uint flags = WindowFlags.Default, DynLibs dynamicLibs = DynLibs.all) { this(800, 480, title, flags, dynamicLibs); }
 
 	/// Creates a new centered window with specified dimensions, title and flags.
-	this(int width, int height, string title = "D2DGame", uint flags = WindowFlags.Default)
+	this(int width, int height, string title = "D2DGame", uint flags = WindowFlags.Default, DynLibs dynamicLibs = DynLibs.all)
 	{
-		this(SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, title, flags);
+		this(SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, title, flags, dynamicLibs);
 	}
 
 	/// Creates a new window with specified parameters.
-	this(int x, int y, int width, int height, string title, uint flags = WindowFlags.Default)
+	this(int x, int y, int width, int height, string title, uint flags = WindowFlags.Default, DynLibs dynamicLibs = DynLibs.all)
 	{
+		bool hasImage = !!(dynamicLibs & DynLibs.image);
+		bool hasMixer = !!(dynamicLibs & DynLibs.mixer);
+		bool hasTTF = !!(dynamicLibs & DynLibs.ttf);
+
 		DerelictSDL2.load();
-		DerelictSDL2Image.load();
-		DerelictSDL2Mixer.load();
-		DerelictSDL2ttf.load();
+		if (hasImage)
+			DerelictSDL2Image.load();
+		if (hasMixer)
+			DerelictSDL2Mixer.load();
+		if (hasTTF)
+			DerelictSDL2ttf.load();
 		DerelictGL3.load();
 
 		SDL_Init(SDL_INIT_EVERYTHING);
 
-		if (TTF_Init() == -1)
+		if (hasTTF && TTF_Init() == -1)
 		{
 			throw new Exception("Error Initializing SDL_TTF: " ~ TTF_GetError().fromStringz.idup);
 		}
@@ -69,7 +84,7 @@ public:
 
 		ShaderProgram.load();
 		Texture.load();
-		if (!Music.load())
+		if (hasMixer && !Music.load())
 			throw new Exception(Music.error);
 
 		create(width, height);
