@@ -42,7 +42,7 @@ public:
 		bool hasMixer = !!(dynamicLibs & DynLibs.mixer);
 		bool hasTTF = !!(dynamicLibs & DynLibs.ttf);
 
-		DerelictSDL2.load();
+		DerelictSDL2.load(SharedLibVersion(2, 0, 2));
 		if (hasImage)
 			DerelictSDL2Image.load();
 		if (hasMixer)
