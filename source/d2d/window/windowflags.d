@@ -3,7 +3,7 @@ module d2d.window.windowflags;
 import d2d;
 
 /// Window creation flags.
-enum WindowFlags : uint
+enum WindowFlags : SDL_WindowFlags
 {
 	/// Fullscreen window with custom resolution.
 	Fullscreen     = SDL_WINDOW_FULLSCREEN,

@@ -78,6 +78,7 @@ class Texture : IDisposable, IVerifiable
 	}
 
 	private static Texture _white;
+	public static bool supportsMipMaps;
 
 	public static void load()
 	{
@@ -201,8 +202,10 @@ class Texture : IDisposable, IVerifiable
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapX);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapY);
 
-		if (enableMipMaps)
+		if (enableMipMaps && supportsMipMaps)
 		{
+			enum GL_TEXTURE_MAX_ANISOTROPY_EXT = 0x84FE;
+
 			glGenerateMipmap(GL_TEXTURE_2D);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 16);
 		}

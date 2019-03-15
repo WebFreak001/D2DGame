@@ -27,16 +27,22 @@ public:
 	static SDL_GLContext glContext = null;
 
 	/// Creates a new centered window with specified title and flags on a 800x480 resolution.
-	this(string title = "D2DGame", uint flags = WindowFlags.Default, DynLibs dynamicLibs = DynLibs.all) { this(800, 480, title, flags, dynamicLibs); }
+	this(string title = "D2DGame", SDL_WindowFlags flags = WindowFlags.Default,
+			DynLibs dynamicLibs = DynLibs.all)
+	{
+		this(800, 480, title, flags, dynamicLibs);
+	}
 
 	/// Creates a new centered window with specified dimensions, title and flags.
-	this(int width, int height, string title = "D2DGame", uint flags = WindowFlags.Default, DynLibs dynamicLibs = DynLibs.all)
+	this(int width, int height, string title = "D2DGame",
+			SDL_WindowFlags flags = WindowFlags.Default, DynLibs dynamicLibs = DynLibs.all)
 	{
 		this(SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, title, flags, dynamicLibs);
 	}
 
 	/// Creates a new window with specified parameters.
-	this(int x, int y, int width, int height, string title, uint flags = WindowFlags.Default, DynLibs dynamicLibs = DynLibs.all)
+	this(int x, int y, int width, int height, string title,
+			SDL_WindowFlags flags = WindowFlags.Default, DynLibs dynamicLibs = DynLibs.all)
 	{
 		bool hasImage = !!(dynamicLibs & DynLibs.image);
 		bool hasMixer = !!(dynamicLibs & DynLibs.mixer);
@@ -78,6 +84,8 @@ public:
 
 		if (SDL_GL_MakeCurrent(_handle, glContext) < 0)
 			throw new Exception(cast(string) fromStringz(SDL_GetError()));
+
+		Texture.supportsMipMaps = DerelictGL3.isExtensionSupported("GL_EXT_texture_filter_anisotropic");
 
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

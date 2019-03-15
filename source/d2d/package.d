@@ -32,7 +32,7 @@ public
 	import derelict.sdl2.image;
 	import derelict.sdl2.mixer;
 	import derelict.sdl2.ttf;
-	import derelict.opengl3.gl3;
+	import derelict.opengl;
 
 	import gl3n.aabb;
 	import gl3n.frustum;
@@ -79,7 +79,7 @@ public
 	import d2d.toolkit.game;
 
 	import std.string;
-	import std.typecons : AliasSeq;
+	import std.meta : AliasSeq;
 }
 
 /// 2D rotation on a mat4.
