@@ -3,3 +3,11 @@
 
 ## Documentation
 The documentation can be found at [https://d2d.webfreak.org/](https://d2d.webfreak.org/)
+
+## Optional Versions
+
+If you wish to enable several features such as Fonts, Textures, Audio, etc. you may want to enable these version identifiers in your dub recipe:
+
+* `BindSDL_Image` - Enables BMFont, BMText, Bitmap.load
+* `BindSDL_Mixer` - Enables Music, Sound
+* `BindSDL_TTF` - Enables TTFFont, TTFText
