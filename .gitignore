@@ -6,6 +6,7 @@ __dummy.html
 *.obj
 bin/
 lib/
+*-test-*
 
 docs/
 dub.selections.json

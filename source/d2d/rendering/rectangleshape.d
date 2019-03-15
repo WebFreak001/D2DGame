@@ -34,6 +34,7 @@ public:
 
 	~this()
 	{
+		_mesh = null;
 		dispose();
 	}
 

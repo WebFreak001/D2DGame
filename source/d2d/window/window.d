@@ -2,12 +2,11 @@ module d2d.window.window;
 
 import d2d;
 
-enum DynLibs
+import std.stdio : stderr;
+
+deprecated("Use BindSDL_Mixer, BindSDL_TTF, BindSDL_Image") enum DynLibs
 {
-	image = 1 << 0,
-	mixer = 1 << 1,
-	ttf = 1 << 2,
-	all = image | mixer | ttf
+	none
 }
 
 /// Single-Window class wrapping SDL_Window.
@@ -27,42 +26,85 @@ public:
 	static SDL_GLContext glContext = null;
 
 	/// Creates a new centered window with specified title and flags on a 800x480 resolution.
-	this(string title = "D2DGame", SDL_WindowFlags flags = WindowFlags.Default,
-			DynLibs dynamicLibs = DynLibs.all)
+	this()(string title = "D2DGame", SDL_WindowFlags flags = WindowFlags.Default)
 	{
-		this(800, 480, title, flags, dynamicLibs);
+		this(800, 480, title, flags);
+	}
+
+	deprecated this()(string title, SDL_WindowFlags flags, DynLibs dynamicLibs)
+	{
+		static assert(false,
+				"Use BindSDL_Mixer, BindSDL_TTF, BindSDL_Image versions instead of DynLibs constructor");
 	}
 
 	/// Creates a new centered window with specified dimensions, title and flags.
-	this(int width, int height, string title = "D2DGame",
-			SDL_WindowFlags flags = WindowFlags.Default, DynLibs dynamicLibs = DynLibs.all)
+	this(int width, int height, string title = "D2DGame", SDL_WindowFlags flags = WindowFlags.Default)
 	{
-		this(SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, title, flags, dynamicLibs);
+		this(SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, title, flags);
 	}
 
 	/// Creates a new window with specified parameters.
 	this(int x, int y, int width, int height, string title,
-			SDL_WindowFlags flags = WindowFlags.Default, DynLibs dynamicLibs = DynLibs.all)
+			SDL_WindowFlags flags = WindowFlags.Default)
 	{
-		bool hasImage = !!(dynamicLibs & DynLibs.image);
-		bool hasMixer = !!(dynamicLibs & DynLibs.mixer);
-		bool hasTTF = !!(dynamicLibs & DynLibs.ttf);
+		SDLSupport sdl = loadSDL();
+		loadErrorCheck("SDL");
+		if (sdl == SDLSupport.noLibrary)
+		{
+			stderr.writeln("SDL failed to load (no library found)");
+			throw new Exception("SDL not found");
+		}
+		else if (sdl == SDLSupport.badLibrary)
+		{
+			stderr.writeln("SDL failed to load some symbols");
+			throw new Exception("SDL version invalid");
+		}
+		else if (sdl != sdlSupport)
+		{
+			stderr.writeln("SDL version failed to match");
+			throw new Exception("SDL version invalid");
+		}
 
-		DerelictSDL2.load(SharedLibVersion(2, 0, 2));
-		if (hasImage)
-			DerelictSDL2Image.load();
-		if (hasMixer)
-			DerelictSDL2Mixer.load();
-		if (hasTTF)
-			DerelictSDL2ttf.load();
-		DerelictGL3.load();
+		version (BindSDL_Image)
+		{
+			auto img = loadSDLImage();
+			loadErrorCheck("SDL_Image");
+			if (img != sdlImageSupport)
+			{
+				stderr.writeln("Failed loading SDL_Image");
+				throw new Exception("Failed to load SDL_Image");
+			}
+		}
+
+		version (BindSDL_Mixer)
+		{
+			auto mixer = loadSDLMixer();
+			loadErrorCheck("SDL_Mixer");
+			if (mixer != sdlMixerSupport)
+			{
+				stderr.writeln("Failed loading SDL_Mixer");
+				throw new Exception("Failed to load SDL_Mixer");
+			}
+		}
+
+		version (BindSDL_TTF)
+		{
+			auto ttf = loadSDLTTF();
+			loadErrorCheck("SDL_TTF");
+			if (ttf != sdlTTFSupport)
+			{
+				stderr.writeln("Failed loading SDL_TTF");
+				throw new Exception("Failed to load SDL_TTF");
+			}
+		}
 
 		SDL_Init(SDL_INIT_EVERYTHING);
 
-		if (hasTTF && TTF_Init() == -1)
-		{
-			throw new Exception("Error Initializing SDL_TTF: " ~ TTF_GetError().fromStringz.idup);
-		}
+		version (BindSDL_TTF)
+			if (TTF_Init() == -1)
+			{
+				throw new Exception("Error Initializing SDL_TTF: " ~ TTF_GetError().fromStringz.idup);
+			}
 
 		_handle = SDL_CreateWindow(title.toStringz(), x, y, width, height, flags | SDL_WINDOW_OPENGL);
 		if (!valid)
@@ -80,20 +122,34 @@ public:
 
 		SDL_GL_SetSwapInterval(0);
 
-		DerelictGL3.reload();
+		auto gl = loadOpenGL();
+		loadErrorCheck("OpenGL");
+		if (gl == GLSupport.noLibrary)
+		{
+			stderr.writeln("OpenGL failed to load (no library found)");
+			throw new Exception("OpenGL not found");
+		}
+		else if (gl == GLSupport.badLibrary)
+		{
+			stderr.writeln("OpenGL failed to load some symbols");
+			throw new Exception("OpenGL could not be initialized");
+		}
+		else if (gl != glSupport)
+			throw new Exception("Needs at least OpenGL 3.2 to run");
 
 		if (SDL_GL_MakeCurrent(_handle, glContext) < 0)
 			throw new Exception(cast(string) fromStringz(SDL_GetError()));
 
-		Texture.supportsMipMaps = DerelictGL3.isExtensionSupported("GL_EXT_texture_filter_anisotropic");
+		Texture.supportsAnisotropy = hasARBTextureFilterAnisotropic;
 
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 		ShaderProgram.load();
 		Texture.load();
-		if (hasMixer && !Music.load())
-			throw new Exception(Music.error);
+		version (BindSDL_Mixer)
+			if (!Music.load())
+				throw new Exception(Music.error);
 
 		create(width, height);
 
@@ -103,6 +159,9 @@ public:
 		_displayPlane.texture = _texture;
 
 		_postMatrix = mat4.orthographic(0, 1, 0, 1, -1, 1);
+
+		foreach (info; soloader.errors)
+			stderr.writeln(info.error, info.message);
 	}
 
 	~this()
@@ -420,4 +479,15 @@ unittest
 
 	window.close();
 	assert(!window.valid);
+}
+
+void loadErrorCheck(string what)
+{
+	if (soloader.errorCount > 0)
+	{
+		stderr.writeln("Errors loading ", what, ":");
+		foreach (info; soloader.errors)
+			stderr.writeln(info.error, info.message);
+		soloader.resetErrors();
+	}
 }

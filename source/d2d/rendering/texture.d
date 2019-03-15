@@ -78,7 +78,7 @@ class Texture : IDisposable, IVerifiable
 	}
 
 	private static Texture _white;
-	public static bool supportsMipMaps;
+	public static bool supportsAnisotropy;
 
 	public static void load()
 	{
@@ -90,7 +90,7 @@ class Texture : IDisposable, IVerifiable
 	public this() {}
 
 	/// Creates and loads the texture with the given filters.
-	public this(string file, TextureFilterMode min = TextureFilterMode.Linear, TextureFilterMode mag = TextureFilterMode.Linear, TextureClampMode wrapX = TextureClampMode.Repeat, TextureClampMode wrapY = TextureClampMode.Repeat)
+	version (BindSDL_Image) public this(string file, TextureFilterMode min = TextureFilterMode.Linear, TextureFilterMode mag = TextureFilterMode.Linear, TextureClampMode wrapX = TextureClampMode.Repeat, TextureClampMode wrapY = TextureClampMode.Repeat)
 	{
 		if (min == TextureFilterMode.LinearMipmapLinear || min == TextureFilterMode.LinearMipmapNearest)
 			enableMipMaps = true;
@@ -202,12 +202,11 @@ class Texture : IDisposable, IVerifiable
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapX);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapY);
 
-		if (enableMipMaps && supportsMipMaps)
+		if (enableMipMaps)
 		{
-			enum GL_TEXTURE_MAX_ANISOTROPY_EXT = 0x84FE;
-
 			glGenerateMipmap(GL_TEXTURE_2D);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 16);
+			if (supportsAnisotropy)
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY, 16);
 		}
 	}
 

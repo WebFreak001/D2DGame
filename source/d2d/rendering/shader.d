@@ -32,9 +32,17 @@ class Shader : IVerifiable
 			_id = glCreateShader(GL_VERTEX_SHADER);
 			break;
 		case ShaderType.TessControl:
+			if (!hasARBTesselationShader)
+				throw new Exception(
+						"Tried to create a TESS_CONTROL_SHADER without GL_ARB_tessellation_shader extension being available");
+
 			_id = glCreateShader(GL_TESS_CONTROL_SHADER);
 			break;
 		case ShaderType.TessEvaluation:
+			if (!hasARBTesselationShader)
+				throw new Exception(
+						"Tried to create a TESS_EVALUATION_SHADER without GL_ARB_tessellation_shader extension being available");
+
 			_id = glCreateShader(GL_TESS_EVALUATION_SHADER);
 			break;
 		case ShaderType.Geometry:

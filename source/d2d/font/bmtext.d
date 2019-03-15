@@ -1,6 +1,5 @@
 module d2d.font.bmtext;
-
-import d2d;
+version (BindSDL_Image)  : import d2d;
 
 import std.utf : byDchar;
 

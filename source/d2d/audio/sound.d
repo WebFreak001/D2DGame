@@ -1,5 +1,7 @@
 module d2d.audio.sound;
 
+version(BindSDL_Mixer):
+
 import d2d;
 
 /// Thin wrap around Mix_Chunk including loading [FLAC, MikMod, Ogg Vorbis, MP3, Wav] using SDL_Mixer.

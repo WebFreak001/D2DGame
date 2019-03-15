@@ -1,6 +1,5 @@
 module d2d.font.bmfont;
-
-import d2d;
+version (BindSDL_Image)  : import d2d;
 
 import std.algorithm : max;
 import std.utf : byDchar;
@@ -115,7 +114,6 @@ public:
 			w = max(w, cast(int) size.x);
 		}
 		return vec2(w * scale,
-				((lines.length - 1) * _handle.common.lineHeight + measureText(lines[$ - 1]).y)
-				* scale);
+				((lines.length - 1) * _handle.common.lineHeight + measureText(lines[$ - 1]).y) * scale);
 	}
 }

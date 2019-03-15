@@ -1,5 +1,7 @@
 module d2d.font.ttffont;
 
+version(BindSDL_TTF):
+
 import d2d;
 
 import std.algorithm : max;
@@ -8,7 +10,7 @@ import std.algorithm : max;
 class TTFFont : IFont
 {
 private:
-	TTF_Font* _handle;
+	TTFFont* _handle;
 
 public:
 	~this()
@@ -16,8 +18,8 @@ public:
 		dispose();
 	}
 
-	/// Handle to underlying `TTF_Font*` handle.
-	@property TTF_Font* handle()
+	/// Handle to underlying `TTFFont*` handle.
+	@property TTFFont* handle()
 	{
 		return _handle;
 	}

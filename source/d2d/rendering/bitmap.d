@@ -64,7 +64,7 @@ class Bitmap : IVerifiable, IDisposable
 	}
 
 	/// Loads a png/webp/tiff/bmp from a file on the filesystem.
-	public static Bitmap load(string file)
+	version (BindSDL_Image) public static Bitmap load(string file)
 	{
 		Bitmap bmp = new Bitmap(IMG_Load(file.toStringz()));
 

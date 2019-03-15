@@ -1,5 +1,7 @@
 module d2d.audio.music;
 
+version(BindSDL_Mixer):
+
 import d2d;
 
 /// 1.0 / MIX_MAX_VOLUME

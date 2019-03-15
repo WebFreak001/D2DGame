@@ -1,3 +1,6 @@
 name "example"
 
 dependency "d2dgame" path=".."
+
+versions "BindSDL_Image" "BindSDL_Mixer"
+

@@ -28,11 +28,14 @@ module d2d;
 
 public
 {
-	import derelict.sdl2.sdl;
-	import derelict.sdl2.image;
-	import derelict.sdl2.mixer;
-	import derelict.sdl2.ttf;
-	import derelict.opengl;
+	import bindbc.sdl;
+	import bindbc.sdl.image;
+	import bindbc.sdl.mixer;
+	import bindbc.sdl.ttf;
+
+	import bindbc.opengl;
+
+	import soloader = bindbc.loader.sharedlib;
 
 	import gl3n.aabb;
 	import gl3n.frustum;

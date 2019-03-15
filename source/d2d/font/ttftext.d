@@ -1,5 +1,7 @@
 module d2d.font.ttftext;
 
+version(BindSDL_TTF):
+
 import d2d;
 
 import std.algorithm : max;

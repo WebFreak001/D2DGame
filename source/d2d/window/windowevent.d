@@ -105,7 +105,7 @@ struct WindowEvent
 	string text;
 
 	/// Function for converting a SDL event to a WindowEvent
-	void   fromSDL(const ref SDL_Event event)
+	void fromSDL(const ref SDL_Event event)
 	{
 		switch (event.type)
 		{
@@ -250,7 +250,7 @@ unittest
 	SDL_Event source;
 	WindowEvent event;
 	source.type = SDL_KEYDOWN;
-	source.key.keysym.sym = 42;
+	source.key.keysym.sym = cast(SDL_Keycode) 42;
 	event.fromSDL(source);
 
 	assert(event.type == WindowEvent.Type.KeyPressed);
