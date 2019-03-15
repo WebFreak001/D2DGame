@@ -57,9 +57,10 @@ public:
 
 	override void dispose()
 	{
-		if (_mesh.valid)
+		if (_mesh && _mesh.valid)
 		{
 			_mesh.dispose();
+			_mesh = null;
 		}
 	}
 

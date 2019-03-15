@@ -1,6 +1,7 @@
 import d2d;
 
 import std.algorithm;
+import std.conv : to;
 
 Texture shurikenTex;
 
