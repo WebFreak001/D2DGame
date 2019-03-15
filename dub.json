@@ -1,9 +1,9 @@
 {
 	"name": "d2dgame",
 	"description": "D 2D Game-Engine",
-	"copyright": "Copyright © 2015, WebFreak001",
+	"copyright": "Copyright © 2015-2019, WebFreak001",
 	"authors": ["WebFreak001"],
-	"license": "GPL-2.0",
+	"license": "MIT",
 	"dflags": ["-XfdocFolder/index.json"],
 	"configurations": [
 	{
