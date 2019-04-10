@@ -32,6 +32,13 @@ interface IRenderTarget
 	/// If shader is null, ShaderProgram.default is gonna be used.
 	final void draw(Mesh mesh, ShaderProgram shader = null)
 	{
+		draw(mesh.renderable, shader);
+	}
+
+	/// Draws raw geometry to the container texture using an optional shader.
+	/// If shader is null, ShaderProgram.default is gonna be used.
+	final void draw(RenderableMesh mesh, ShaderProgram shader = null)
+	{
 		bind();
 		if (shader is null)
 			shader = ShaderProgram.defaultShader;
@@ -39,8 +46,14 @@ interface IRenderTarget
 		shader.bind();
 		shader.set("transform", matrixStack.top);
 		shader.set("projection", projectionStack.top);
-		glBindVertexArray(mesh.renderable.bufferID);
-		glDrawElements(GL_TRIANGLES, mesh.renderable.indexLength, GL_UNSIGNED_INT, null);
+
+		glBindVertexArray(mesh.bufferID);
+
+		if (mesh.indexed)
+			glDrawElements(mesh.primitiveType, mesh.count, mesh.indexType,
+					cast(void*)(mesh.start * mesh.indexStride));
+		else
+			glDrawArrays(mesh.primitiveType, mesh.start, mesh.count);
 	}
 
 	/// Returns the result of the container texture.
