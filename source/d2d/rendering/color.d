@@ -338,7 +338,7 @@ struct Color
 
 			m = lightness + lightness - v;
 			sv = (v - m) / v;
-			hue *= 6.0;
+			hue = (hue % 1.0) * 6.0;
 			sextant = cast(int) hue;
 			fract = hue - sextant;
 			vsf = v * sv * fract;
