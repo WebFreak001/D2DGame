@@ -69,6 +69,8 @@ public
 	import d2d.rendering.shader;
 	import d2d.rendering.shaderprogram;
 	import d2d.rendering.shape;
+	import d2d.rendering.spritebatch;
+	import d2d.rendering.spritesheet;
 	import d2d.rendering.texture;
 
 	import d2d.audio.music;
