@@ -52,6 +52,7 @@ public
 	import d2d.core.fpslimiter;
 	import d2d.core.idisposable;
 	import d2d.core.iverifiable;
+	import d2d.core.quadtree;
 	import d2d.core.transformable;
 	import d2d.core.utils;
 
