@@ -79,7 +79,11 @@ protected:
 	abstract void draw();
 
 	/// Happens when some window event gets called.
-	void onEvent(Event event) {}
+	void onEvent(Event event)
+	{
+		Keyboard.instance.handle(event);
+		Mouse.instance.handle(event);
+	}
 
 public:
 	/// Starts the window and calls all functions
