@@ -211,7 +211,7 @@ class Texture : IDisposable, IVerifiable
 	}
 
 	/// Binds the current texture to the given unit.
-	public void bind(uint unit)
+	public void bind(uint unit = 0)
 	{
 		glActiveTexture(GL_TEXTURE0 + unit);
 		glBindTexture(GL_TEXTURE_2D, _id);
