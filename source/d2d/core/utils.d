@@ -130,6 +130,12 @@ struct Rectangle(T)
 	{
 		return Rectangle!T(x + position.x, y + position.y, width, height);
 	}
+
+	bool intersects(const rect other) nothrow @nogc pure @safe
+	{
+		return !(x + width < other.x || other.x + other.width < x || y + height < other.y
+				|| other.y + other.height < y);
+	}
 }
 
 alias rect = Rectangle!float;
