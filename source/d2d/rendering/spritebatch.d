@@ -35,6 +35,56 @@ class SpriteBatchImpl(uint maxVertexCount) : IDisposable, IVerifiable, IDrawable
 	private uint vbo;
 	private bool running;
 
+	/// Regular texture shader.
+	public static ShaderProgram spriteShader;
+
+	static void load()
+	{
+		spriteShader = new ShaderProgram();
+		Shader vertex = new Shader();
+		vertex.load(ShaderType.Vertex, "#version 330
+layout(location = 0) in vec3 in_position;
+layout(location = 1) in vec2 in_tex;
+layout(location = 2) in vec4 in_color;
+
+uniform mat4 transform;
+uniform mat4 projection;
+
+out vec2 texCoord;
+out vec4 color;
+
+void main()
+{
+	gl_Position = projection * transform * vec4(in_position, 1);
+
+	texCoord = in_tex;
+	color = in_color;
+}
+");
+		Shader fragment = new Shader();
+		fragment.load(ShaderType.Fragment, "#version 330
+uniform sampler2D tex;
+
+in vec2 texCoord;
+in vec4 color;
+
+layout(location = 0) out vec4 out_frag_color;
+
+void main()
+{
+	out_frag_color = texture(tex, texCoord) * color;
+}
+");
+		spriteShader.attach(vertex);
+		spriteShader.attach(fragment);
+		spriteShader.link();
+		spriteShader.bind();
+		spriteShader.registerUniform("tex");
+		spriteShader.registerUniform("transform");
+		spriteShader.registerUniform("projection");
+		spriteShader.set("tex", 0);
+	}
+
 	this()
 	{
 		glGenVertexArrays(1, &vao);
@@ -56,6 +106,9 @@ class SpriteBatchImpl(uint maxVertexCount) : IDisposable, IVerifiable, IDrawable
 		glBindVertexArray(0);
 
 		renderable = new RenderableMesh(vao, 0, false);
+
+		if (spriteShader is null)
+			load();
 	}
 
 	void dispose()
@@ -71,7 +124,7 @@ class SpriteBatchImpl(uint maxVertexCount) : IDisposable, IVerifiable, IDrawable
 		return renderable !is null;
 	}
 
-	void draw(IRenderTarget target, ShaderProgram shader = null)
+	void draw(IRenderTarget target, ShaderProgram shader = spriteShader)
 	{
 		texture.bind();
 		target.draw(renderable, shader);
@@ -145,7 +198,8 @@ class SpriteBatchImpl(uint maxVertexCount) : IDisposable, IVerifiable, IDrawable
 		vec2 uvScale = vec2(1.0f / texture.width, 1.0f / texture.height);
 		vec2 size = vec2(sprite.width, sprite.height);
 
-		drawRectangle(rect.dim(size), rect.dim(sprite.x, sprite.y, size).scale(uvScale), transformation, color);
+		drawRectangle(rect.dim(size), rect.dim(sprite.x, sprite.y, size)
+				.scale(uvScale), transformation, color);
 	}
 
 	void drawRectangle(vec2 position, vec2 size, vec4 color = vec4(1))
