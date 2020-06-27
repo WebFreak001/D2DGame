@@ -10,7 +10,7 @@ import std.algorithm : max;
 class TTFFont : IFont
 {
 private:
-	TTFFont* _handle;
+	TTF_Font* _handle;
 
 public:
 	~this()
@@ -18,8 +18,8 @@ public:
 		dispose();
 	}
 
-	/// Handle to underlying `TTFFont*` handle.
-	@property TTFFont* handle()
+	/// Handle to underlying `TTF_Font*` handle.
+	@property TTF_Font* handle()
 	{
 		return _handle;
 	}
