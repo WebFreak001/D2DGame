@@ -1,7 +1,7 @@
 {
 	"name": "d2dgame",
 	"description": "D 2D Game-Engine",
-	"copyright": "Copyright © 2015-2019, WebFreak001",
+	"copyright": "Copyright © 2015-2021, WebFreak001",
 	"authors": ["WebFreak001"],
 	"license": "MIT",
 	"dependencies":
@@ -15,5 +15,21 @@
 	"versions": [
 		"GL_32", "GL_ARB_texture_filter_anisotropic", "ARB_texture_filter_anisotropic", "GL_ARB_tessellation_shader",
 		"SDL_202"
+	],
+	"copyFiles-windows": [
+		"dll/libFLAC-8.dll",
+		"dll/libfreetype-6.dll",
+		"dll/libogg-0.dll",
+		"dll/libpng16-16.dll",
+		"dll/libtiff-5.dll",
+		"dll/libvorbis-0.dll",
+		"dll/libvorbisfile-3.dll",
+		"dll/libwebp-4.dll",
+		"dll/SDL2.dll",
+		"dll/SDL2_image.dll",
+		"dll/SDL2_mixer.dll",
+		"dll/SDL2_ttf.dll",
+		"dll/smpeg2.dll",
+		"dll/zlib1.dll"
 	]
 }
