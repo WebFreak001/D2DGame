@@ -16,5 +16,5 @@ If you wish to enable several features such as Fonts, Textures, Audio, etc. you 
 If your on Ubuntu, run this command to install dependencies packages
 
 ```sh
-sudo apt install libsdl2-dev libsdl-ttf2.0-dev libsdl2-mixer-dev libsdl2-image-dev
+sudo apt install libsdl2-dev libsdl-ttf2-dev libsdl2-mixer-dev libsdl2-image-dev
 ```
